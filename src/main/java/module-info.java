@@ -4,4 +4,6 @@
  */
 module se.uu.ub.cora.fedoraarchive {
 	requires se.uu.ub.cora.storage;
+	requires se.uu.ub.cora.fedora;
+	requires se.uu.ub.cora.converter;
 }

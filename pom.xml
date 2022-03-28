@@ -35,6 +35,9 @@
 		<fedora.version>2.0-SNAPSHOT</fedora.version>
 		<data.version>5.4.0</data.version>
 		<json.version>3.1.0</json.version>
+		<logger.version>2.4.0</logger.version>
+		<converter.version>2.0.0</converter.version>
+		<testutils.version>1.2.0</testutils.version>
 	</properties>
 
 	<scm>
@@ -50,21 +53,46 @@
 			<artifactId>storage</artifactId>
 			<version>${storage.version}</version>
 		</dependency>
-		<!--		<dependency>
+		<dependency>
 			<groupId>se.uu.ub.cora</groupId>
 			<artifactId>fedora</artifactId>
 			<version>${fedora.version}</version>
 			<scope>compile</scope>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>se.uu.ub.cora</groupId>
 			<artifactId>coradata</artifactId>
 			<version>${data.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>converter</artifactId>
+			<version>${converter.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>logger</artifactId>
+			<version>${logger.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>testutils</artifactId>
+			<version>${testutils.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
