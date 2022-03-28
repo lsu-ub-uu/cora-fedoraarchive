@@ -34,8 +34,8 @@ import se.uu.ub.cora.fedora.FedoraAdapterImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactoryImp;
-import se.uu.ub.cora.logger.LoggerFactory;
 import se.uu.ub.cora.logger.LoggerProvider;
+import se.uu.ub.cora.storage.StorageException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 import se.uu.ub.cora.storage.archive.RecordArchiveProvider;
 
@@ -45,17 +45,22 @@ public class FedoraRecordArchiveProviderTest {
 	private FedoraRecordArchiveProvider provider;
 	private String fedoraBaseUrl = "http://someFedoraUrl/";
 	private ConverterFactorySpy converterFactorySpy;
+	private LoggerFactorySpy loggerFactorySpy;
+	private String testedClassName = "FedoraRecordArchiveProvider";
 
 	@BeforeMethod
 	public void beforeMethod() {
-		LoggerFactory loggerFactory = new LoggerFactorySpy();
-		LoggerProvider.setLoggerFactory(loggerFactory);
+		setUpFactories();
 		initInfo = new HashMap<>();
 		initInfo.put("fedoraArchiveUrl", fedoraBaseUrl);
+		provider = new FedoraRecordArchiveProvider();
+	}
+
+	private void setUpFactories() {
+		loggerFactorySpy = new LoggerFactorySpy();
+		LoggerProvider.setLoggerFactory(loggerFactorySpy);
 		converterFactorySpy = new ConverterFactorySpy();
 		ConverterProvider.setConverterFactory("xml", converterFactorySpy);
-
-		provider = new FedoraRecordArchiveProvider();
 	}
 
 	@Test
@@ -102,5 +107,34 @@ public class FedoraRecordArchiveProviderTest {
 
 		assertSame(converterFactorySpy.MCR
 				.getReturnValue("factorExternallyConvertableToStringConverter", 0), converter);
+	}
+
+	@Test
+	public void testLoggingNormalStartup() {
+		provider.startUsingInitInfo(initInfo);
+		assertEquals(loggerFactorySpy.getInfoLogMessageUsingClassNameAndNo(testedClassName, 0),
+				"FedoraRecordArchiveProvider starting FedoraRecordArchive...");
+		assertEquals(loggerFactorySpy.getInfoLogMessageUsingClassNameAndNo(testedClassName, 1),
+				"Found http://someFedoraUrl/ as fedoraArchiveUrl");
+		assertEquals(loggerFactorySpy.getInfoLogMessageUsingClassNameAndNo(testedClassName, 2),
+				"FedoraRecordArchiveProvider started FedoraRecordArchive");
+	}
+
+	@Test(expectedExceptions = StorageException.class, expectedExceptionsMessageRegExp = ""
+			+ "InitInfo must contain fedoraArchiveUrl")
+	public void testErrorMissingFedoraArchiveUrlInInitInfo() throws Exception {
+		provider.startUsingInitInfo(new HashMap<>());
+	}
+
+	@Test
+	public void testLoggingMissingFedoraArchiveUrlInInitInfo() throws Exception {
+		try {
+			provider.startUsingInitInfo(new HashMap<>());
+		} catch (Exception e) {
+		}
+		assertEquals(loggerFactorySpy.getInfoLogMessageUsingClassNameAndNo(testedClassName, 0),
+				"FedoraRecordArchiveProvider starting FedoraRecordArchive...");
+		assertEquals(loggerFactorySpy.getFatalLogMessageUsingClassNameAndNo(testedClassName, 0),
+				"InitInfo must contain fedoraArchiveUrl");
 	}
 }

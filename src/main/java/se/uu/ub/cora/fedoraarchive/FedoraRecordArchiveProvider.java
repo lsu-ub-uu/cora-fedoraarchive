@@ -26,12 +26,17 @@ import se.uu.ub.cora.fedora.FedoraAdapterImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactoryImp;
+import se.uu.ub.cora.logger.Logger;
+import se.uu.ub.cora.logger.LoggerProvider;
+import se.uu.ub.cora.storage.StorageException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 import se.uu.ub.cora.storage.archive.RecordArchiveProvider;
 
 public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 
+	private Logger logger = LoggerProvider.getLoggerForClass(FedoraRecordArchiveProvider.class);
 	private FedoraRecordArchive fedoraRecordArchive;
+	private Map<String, String> initInfo;
 
 	@Override
 	public int getOrderToSelectImplementionsBy() {
@@ -40,14 +45,46 @@ public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 
 	@Override
 	public void startUsingInitInfo(Map<String, String> initInfo) {
-		String fedoraUrl = initInfo.get("fedoraArchiveUrl");
-		HttpHandlerFactory httpHandlerFactory = new HttpHandlerFactoryImp();
-		FedoraAdapterImp fedoraAdapter = new FedoraAdapterImp(httpHandlerFactory, fedoraUrl);
+		this.initInfo = initInfo;
+		logAndStartFedoraRecordArchive();
+	}
+
+	private void logAndStartFedoraRecordArchive() {
+		logger.logInfoUsingMessage("FedoraRecordArchiveProvider starting FedoraRecordArchive...");
+		startFedoraRecordArchive();
+		logger.logInfoUsingMessage("FedoraRecordArchiveProvider started FedoraRecordArchive");
+	}
+
+	private void startFedoraRecordArchive() {
+		FedoraAdapterImp fedoraAdapter = createFedoraAdapter();
 		ExternallyConvertibleToStringConverter converter = ConverterProvider
 				.getExternallyConvertibleToStringConverter("xml");
-
 		fedoraRecordArchive = new FedoraRecordArchive(converter, fedoraAdapter);
+	}
 
+	private FedoraAdapterImp createFedoraAdapter() {
+		String fedoraUrl = tryToGetInitParameterLogIfFoundThrowErrorIfNot("fedoraArchiveUrl");
+		HttpHandlerFactory httpHandlerFactory = new HttpHandlerFactoryImp();
+		return new FedoraAdapterImp(httpHandlerFactory, fedoraUrl);
+	}
+
+	private String tryToGetInitParameterLogIfFoundThrowErrorIfNot(String parameterName) {
+		String parameterValue = tryToGetInitParameter(parameterName);
+		logger.logInfoUsingMessage("Found " + parameterValue + " as " + parameterName);
+		return parameterValue;
+	}
+
+	private String tryToGetInitParameter(String parameterName) {
+		throwErrorIfKeyIsMissingFromInitInfo(parameterName);
+		return initInfo.get(parameterName);
+	}
+
+	private void throwErrorIfKeyIsMissingFromInitInfo(String key) {
+		if (!initInfo.containsKey(key)) {
+			String errorMessage = "InitInfo must contain " + key;
+			logger.logFatalUsingMessage(errorMessage);
+			throw StorageException.withMessage(errorMessage);
+		}
 	}
 
 	@Override
