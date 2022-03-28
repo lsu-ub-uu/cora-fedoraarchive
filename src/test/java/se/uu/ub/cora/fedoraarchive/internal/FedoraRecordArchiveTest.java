@@ -1,4 +1,4 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.internal;
 
 import static org.testng.Assert.assertEquals;
 
@@ -6,6 +6,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import se.uu.ub.cora.data.DataGroup;
+import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
+import se.uu.ub.cora.fedoraarchive.spy.DataGroupSpy;
+import se.uu.ub.cora.fedoraarchive.spy.ExternallyConvertibleToStringConverterSpy;
+import se.uu.ub.cora.fedoraarchive.spy.FedoraWrapperSpy;
 import se.uu.ub.cora.storage.RecordConflictException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 

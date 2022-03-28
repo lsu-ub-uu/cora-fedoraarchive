@@ -1,4 +1,4 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.spy;
 
 import java.util.Collection;
 import java.util.List;

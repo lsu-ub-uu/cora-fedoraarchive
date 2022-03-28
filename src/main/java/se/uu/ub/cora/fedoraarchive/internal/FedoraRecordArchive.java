@@ -1,4 +1,4 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.internal;
 
 import se.uu.ub.cora.converter.ConverterException;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;

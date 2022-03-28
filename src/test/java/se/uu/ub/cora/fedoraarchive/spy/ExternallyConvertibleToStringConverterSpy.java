@@ -1,4 +1,4 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.spy;
 
 import se.uu.ub.cora.converter.ConverterException;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
@@ -8,7 +8,7 @@ import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 public class ExternallyConvertibleToStringConverterSpy
 		implements ExternallyConvertibleToStringConverter {
 
-	MethodCallRecorder MCR = new MethodCallRecorder();
+	public MethodCallRecorder MCR = new MethodCallRecorder();
 	public String transformedXml = "<xml>someXml</xml>";
 	public boolean throwExceptionOnConvert = false;
 
