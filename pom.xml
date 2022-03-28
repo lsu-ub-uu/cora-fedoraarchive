@@ -37,6 +37,7 @@
 		<json.version>3.1.0</json.version>
 		<logger.version>2.4.0</logger.version>
 		<converter.version>2.0.0</converter.version>
+		<xmlconverter.version>1.10.0</xmlconverter.version>
 		<testutils.version>1.2.0</testutils.version>
 	</properties>
 
@@ -75,6 +76,12 @@
 			<groupId>se.uu.ub.cora</groupId>
 			<artifactId>converter</artifactId>
 			<version>${converter.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>xmlconverter</artifactId>
+			<version>${xmlconverter.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
