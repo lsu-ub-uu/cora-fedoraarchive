@@ -30,8 +30,10 @@ import org.testng.annotations.Test;
 
 import se.uu.ub.cora.converter.ConverterProvider;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
-import se.uu.ub.cora.fedora.FedoraAdapterImp;
+import se.uu.ub.cora.fedora.internal.FedoraAdapterImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
+import se.uu.ub.cora.fedoraarchive.spy.ConverterFactorySpy;
+import se.uu.ub.cora.fedoraarchive.spy.LoggerFactorySpy;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactoryImp;
 import se.uu.ub.cora.logger.LoggerProvider;
@@ -88,11 +90,11 @@ public class FedoraRecordArchiveProviderTest {
 
 		FedoraAdapterImp fedoraAdapter = (FedoraAdapterImp) fedoraRecordArchive
 				.onlyForTestGetFedoraAdapter();
-		String baseUrl = fedoraAdapter.getBaseUrl();
+		String baseUrl = fedoraAdapter.onlyForTestGetBaseUrl();
 
 		assertEquals(baseUrl, fedoraBaseUrl);
 
-		HttpHandlerFactory httpHandlerFactory = fedoraAdapter.getHttpHandlerFactory();
+		HttpHandlerFactory httpHandlerFactory = fedoraAdapter.onlyForTestGetHttpHandlerFactory();
 
 		assertTrue(httpHandlerFactory instanceof HttpHandlerFactoryImp);
 	}

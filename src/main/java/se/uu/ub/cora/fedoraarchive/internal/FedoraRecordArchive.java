@@ -28,22 +28,24 @@ import se.uu.ub.cora.storage.archive.RecordArchive;
 
 public class FedoraRecordArchive implements RecordArchive {
 
-	private FedoraAdapter fedoraWrapper;
+	private FedoraAdapter fedoraAdapter;
 	private ExternallyConvertibleToStringConverter xmlConverter;
 
 	public FedoraRecordArchive(ExternallyConvertibleToStringConverter xmlConverter,
 			FedoraAdapter fedoraWrapper) {
 		this.xmlConverter = xmlConverter;
-		this.fedoraWrapper = fedoraWrapper;
+		this.fedoraAdapter = fedoraWrapper;
 	}
 
 	@Override
 	public void create(String type, String id, DataGroup dataRecord) {
 		try {
 			// TODO: do we need to store type in Fedora??? If yes, how???
+			// TODO: Hantera dubbletter och andra fel.
+			// TODO: Hantera dubbletter och andra fel.
 
 			String xml = xmlConverter.convert(dataRecord);
-			fedoraWrapper.create(id, xml);
+			fedoraAdapter.create(id, xml);
 
 		} catch (FedoraException e) {
 			throw RecordConflictException
@@ -56,7 +58,7 @@ public class FedoraRecordArchive implements RecordArchive {
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {
-		return fedoraWrapper;
+		return fedoraAdapter;
 
 	}
 

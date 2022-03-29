@@ -22,7 +22,7 @@ import java.util.Map;
 
 import se.uu.ub.cora.converter.ConverterProvider;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
-import se.uu.ub.cora.fedora.FedoraAdapterImp;
+import se.uu.ub.cora.fedora.internal.FedoraAdapterImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
 import se.uu.ub.cora.httphandler.HttpHandlerFactory;
 import se.uu.ub.cora.httphandler.HttpHandlerFactoryImp;

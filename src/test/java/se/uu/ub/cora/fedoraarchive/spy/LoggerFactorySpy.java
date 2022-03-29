@@ -1,4 +1,4 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.spy;
 
 import java.util.HashMap;
 import java.util.List;

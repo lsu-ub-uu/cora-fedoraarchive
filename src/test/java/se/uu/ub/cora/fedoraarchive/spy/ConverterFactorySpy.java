@@ -1,13 +1,12 @@
-package se.uu.ub.cora.fedoraarchive;
+package se.uu.ub.cora.fedoraarchive.spy;
 
 import se.uu.ub.cora.converter.ConverterFactory;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.converter.StringToExternallyConvertibleConverter;
-import se.uu.ub.cora.fedoraarchive.spy.ExternallyConvertibleToStringConverterSpy;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 
 public class ConverterFactorySpy implements ConverterFactory {
-	MethodCallRecorder MCR = new MethodCallRecorder();
+	public MethodCallRecorder MCR = new MethodCallRecorder();
 
 	@Override
 	public ExternallyConvertibleToStringConverter factorExternallyConvertableToStringConverter() {
