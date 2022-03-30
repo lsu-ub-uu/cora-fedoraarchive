@@ -18,18 +18,19 @@
  */
 package se.uu.ub.cora.fedoraarchive.spy;
 
-import se.uu.ub.cora.logger.Logger;
-import se.uu.ub.cora.logger.LoggerFactory;
+import se.uu.ub.cora.fedora.FedoraAdapter;
+import se.uu.ub.cora.fedora.FedoraFactory;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 
-public class LoggerFactorySpy implements LoggerFactory {
+public class FedoraFactorySpy implements FedoraFactory {
 	public MethodCallRecorder MCR = new MethodCallRecorder();
 
 	@Override
-	public Logger factorForClass(Class<? extends Object> javaClass) {
-		MCR.addCall("javaClass", javaClass);
-		LoggerSpy logger = new LoggerSpy();
-		MCR.addReturned(logger);
-		return logger;
+	public FedoraAdapter factorFedoraAdapter() {
+		MCR.addCall();
+		FedoraAdapter fedoraAdapterSpy = new FedoraAdapterSpy();
+		MCR.addReturned(fedoraAdapterSpy);
+		return fedoraAdapterSpy;
 	}
+
 }

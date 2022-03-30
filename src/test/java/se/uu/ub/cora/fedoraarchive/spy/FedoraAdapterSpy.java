@@ -20,11 +20,11 @@ package se.uu.ub.cora.fedoraarchive.spy;
 
 import java.io.InputStream;
 
-import se.uu.ub.cora.fedora.FedoraException;
 import se.uu.ub.cora.fedora.FedoraAdapter;
+import se.uu.ub.cora.fedora.FedoraConflictException;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 
-public class FedoraWrapperSpy implements FedoraAdapter {
+public class FedoraAdapterSpy implements FedoraAdapter {
 
 	public MethodCallRecorder MCR = new MethodCallRecorder();
 	public boolean throwExceptionOnCreateRecordAlreadyExists = false;
@@ -34,7 +34,7 @@ public class FedoraWrapperSpy implements FedoraAdapter {
 		MCR.addCall("recordId", recordId, "recordXml", recordXml);
 
 		if (throwExceptionOnCreateRecordAlreadyExists) {
-			throw FedoraException.withMessage("From spy, record alreadyExists");
+			throw FedoraConflictException.withMessage("From spy, record alreadyExists");
 		}
 
 	}

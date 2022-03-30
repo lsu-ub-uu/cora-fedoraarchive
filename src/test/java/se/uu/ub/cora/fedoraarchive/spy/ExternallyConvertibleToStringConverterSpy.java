@@ -18,7 +18,6 @@
  */
 package se.uu.ub.cora.fedoraarchive.spy;
 
-import se.uu.ub.cora.converter.ConverterException;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.data.ExternallyConvertible;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
@@ -35,7 +34,7 @@ public class ExternallyConvertibleToStringConverterSpy
 		MCR.addCall("externallyConvertible", externallyConvertible);
 
 		if (throwExceptionOnConvert) {
-			throw new ConverterException("Spy exception, error con xml convertion");
+			throw new RuntimeException("Spy exception, error con xml convertion");
 		}
 
 		MCR.addReturned(transformedXml);

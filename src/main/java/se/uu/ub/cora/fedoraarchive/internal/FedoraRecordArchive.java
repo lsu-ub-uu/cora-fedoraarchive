@@ -18,18 +18,21 @@
  */
 package se.uu.ub.cora.fedoraarchive.internal;
 
-import se.uu.ub.cora.converter.ConverterException;
+import java.text.MessageFormat;
+
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.data.DataGroup;
 import se.uu.ub.cora.fedora.FedoraAdapter;
-import se.uu.ub.cora.fedora.FedoraException;
+import se.uu.ub.cora.fedora.FedoraConflictException;
 import se.uu.ub.cora.storage.RecordConflictException;
+import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 
 public class FedoraRecordArchive implements RecordArchive {
 
 	private FedoraAdapter fedoraAdapter;
 	private ExternallyConvertibleToStringConverter xmlConverter;
+	private String pattern = "Record could not be created in Fedora Archive for type: {0} and id: {1}";
 
 	public FedoraRecordArchive(ExternallyConvertibleToStringConverter xmlConverter,
 			FedoraAdapter fedoraWrapper) {
@@ -40,26 +43,26 @@ public class FedoraRecordArchive implements RecordArchive {
 	@Override
 	public void create(String type, String id, DataGroup dataRecord) {
 		try {
-			// TODO: do we need to store type in Fedora??? If yes, how???
-			// TODO: Hantera dubbletter och andra fel.
-			// TODO: Hantera dubbletter och andra fel.
-
-			String xml = xmlConverter.convert(dataRecord);
-			fedoraAdapter.create(id, xml);
-
-		} catch (FedoraException e) {
+			String combinedId = type + ":" + id;
+			tryToCreate(combinedId, dataRecord);
+		} catch (FedoraConflictException e) {
 			throw RecordConflictException
-					.withMessage("Record could not be created in Fedora Archive");
-		} catch (ConverterException e) {
-			throw RecordConflictException.withMessage(
-					"Record could not be converted to xml and therefore could not be stored "
-							+ "in Fedora Archive");
+					.withMessageAndException(MessageFormat.format(pattern, type, id), e);
+		} catch (Exception e) {
+			throw ArchiveException.withMessageAndException(MessageFormat.format(pattern, type, id),
+					e);
 		}
+	}
+
+	private void tryToCreate(String id, DataGroup dataRecord) {
+		// TODO: do we need to store type in Fedora??? If yes, how???
+
+		String xml = xmlConverter.convert(dataRecord);
+		fedoraAdapter.create(id, xml);
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {
 		return fedoraAdapter;
-
 	}
 
 	public ExternallyConvertibleToStringConverter onlyForTestGetXmlConverter() {

@@ -21,22 +21,22 @@ package se.uu.ub.cora.fedoraarchive;
 import java.util.Map;
 
 import se.uu.ub.cora.converter.ConverterProvider;
-import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
-import se.uu.ub.cora.fedora.internal.FedoraAdapterImp;
+import se.uu.ub.cora.fedora.FedoraFactory;
+import se.uu.ub.cora.fedora.FedoraFactoryImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
-import se.uu.ub.cora.httphandler.HttpHandlerFactory;
-import se.uu.ub.cora.httphandler.HttpHandlerFactoryImp;
 import se.uu.ub.cora.logger.Logger;
 import se.uu.ub.cora.logger.LoggerProvider;
 import se.uu.ub.cora.storage.StorageException;
+import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 import se.uu.ub.cora.storage.archive.RecordArchiveProvider;
 
 public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 
 	private Logger logger = LoggerProvider.getLoggerForClass(FedoraRecordArchiveProvider.class);
-	private FedoraRecordArchive fedoraRecordArchive;
 	private Map<String, String> initInfo;
+
+	FedoraFactory fedoraFactory;
 
 	@Override
 	public int getOrderToSelectImplementionsBy() {
@@ -56,16 +56,8 @@ public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 	}
 
 	private void startFedoraRecordArchive() {
-		FedoraAdapterImp fedoraAdapter = createFedoraAdapter();
-		ExternallyConvertibleToStringConverter converter = ConverterProvider
-				.getExternallyConvertibleToStringConverter("xml");
-		fedoraRecordArchive = new FedoraRecordArchive(converter, fedoraAdapter);
-	}
-
-	private FedoraAdapterImp createFedoraAdapter() {
-		String fedoraUrl = tryToGetInitParameterLogIfFoundThrowErrorIfNot("fedoraArchiveUrl");
-		HttpHandlerFactory httpHandlerFactory = new HttpHandlerFactoryImp();
-		return new FedoraAdapterImp(httpHandlerFactory, fedoraUrl);
+		fedoraFactory = new FedoraFactoryImp(
+				tryToGetInitParameterLogIfFoundThrowErrorIfNot("fedoraArchiveUrl"));
 	}
 
 	private String tryToGetInitParameterLogIfFoundThrowErrorIfNot(String parameterName) {
@@ -89,7 +81,12 @@ public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 
 	@Override
 	public RecordArchive getRecordArchive() {
-		return fedoraRecordArchive;
+		if (fedoraFactory == null) {
+			throw ArchiveException.withMessage(
+					"startUsingInitInfo MUST be called before calling getRecordArchive.");
+		}
+		var xmlConverter = ConverterProvider.getExternallyConvertibleToStringConverter("xml");
+		var fedoraAdapter = fedoraFactory.factorFedoraAdapter();
+		return new FedoraRecordArchive(xmlConverter, fedoraAdapter);
 	}
-
 }
