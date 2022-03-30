@@ -59,7 +59,7 @@ public class FedoraRecordArchiveProviderTest {
 	public void beforeMethod() {
 		setUpFactories();
 		initInfo = new HashMap<>();
-		initInfo.put("fedoraArchiveUrl", fedoraBaseUrl);
+		initInfo.put("fedoraArchiveURL", fedoraBaseUrl);
 		provider = new FedoraRecordArchiveProvider();
 
 		providerForTest = new FedoraRecordArchiveProviderExtendedForTest();
@@ -88,7 +88,7 @@ public class FedoraRecordArchiveProviderTest {
 		providerForTest.startUsingInitInfo(initInfo);
 		FedoraFactoryImp fedoraFactory = (FedoraFactoryImp) providerForTest
 				.onlyForTestGetFedoraFactory();
-		assertEquals(fedoraFactory.onlyForTestGetBaseUrl(), initInfo.get("fedoraArchiveUrl"));
+		assertEquals(fedoraFactory.onlyForTestGetBaseUrl(), initInfo.get("fedoraArchiveURL"));
 	}
 
 	@Test
@@ -162,7 +162,7 @@ public class FedoraRecordArchiveProviderTest {
 		loggerSpy.MCR.assertParameters("logInfoUsingMessage", 0,
 				"FedoraRecordArchiveProvider starting FedoraRecordArchive...");
 		loggerSpy.MCR.assertParameters("logInfoUsingMessage", 1,
-				"Found http://someFedoraUrl/ as fedoraArchiveUrl");
+				"Found http://someFedoraUrl/ as fedoraArchiveURL");
 		loggerSpy.MCR.assertParameters("logInfoUsingMessage", 2,
 				"FedoraRecordArchiveProvider started FedoraRecordArchive");
 	}
@@ -176,13 +176,13 @@ public class FedoraRecordArchiveProviderTest {
 	}
 
 	@Test(expectedExceptions = StorageException.class, expectedExceptionsMessageRegExp = ""
-			+ "InitInfo must contain fedoraArchiveUrl")
-	public void testErrorMissingFedoraArchiveUrlInInitInfo() throws Exception {
+			+ "InitInfo must contain fedoraArchiveURL")
+	public void testErrorMissingfedoraArchiveURLInInitInfo() throws Exception {
 		provider.startUsingInitInfo(new HashMap<>());
 	}
 
 	@Test
-	public void testLoggingMissingFedoraArchiveUrlInInitInfo() throws Exception {
+	public void testLoggingMissingfedoraArchiveURLInInitInfo() throws Exception {
 		try {
 			provider.startUsingInitInfo(new HashMap<>());
 		} catch (Exception e) {
@@ -190,7 +190,7 @@ public class FedoraRecordArchiveProviderTest {
 			loggerSpy.MCR.assertParameters("logInfoUsingMessage", 0,
 					"FedoraRecordArchiveProvider starting FedoraRecordArchive...");
 			loggerSpy.MCR.assertParameters("logFatalUsingMessage", 0,
-					"InitInfo must contain fedoraArchiveUrl");
+					"InitInfo must contain fedoraArchiveURL");
 		}
 	}
 }

@@ -57,7 +57,7 @@ public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 
 	private void startFedoraRecordArchive() {
 		fedoraFactory = new FedoraFactoryImp(
-				tryToGetInitParameterLogIfFoundThrowErrorIfNot("fedoraArchiveUrl"));
+				tryToGetInitParameterLogIfFoundThrowErrorIfNot("fedoraArchiveURL"));
 	}
 
 	private String tryToGetInitParameterLogIfFoundThrowErrorIfNot(String parameterName) {
