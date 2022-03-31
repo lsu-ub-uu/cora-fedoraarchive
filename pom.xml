@@ -31,13 +31,13 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>6.0-SNAPSHOT</storage.version>
-		<fedora.version>2.0-SNAPSHOT</fedora.version>
-		<data.version>5.4.0</data.version>
-		<json.version>3.1.0</json.version>
+		<storage.version>6.0.0</storage.version>
+		<fedora.version>2.0.0</fedora.version>
+		<data.version>6.1.0</data.version>
+		<json.version>3.2.0</json.version>
 		<logger.version>2.4.0</logger.version>
-		<converter.version>2.0.0</converter.version>
-		<xmlconverter.version>1.10.0</xmlconverter.version>
+		<converter.version>2.1.0</converter.version>
+		<xmlconverter.version>1.11.0</xmlconverter.version>
 		<testutils.version>1.2.0</testutils.version>
 	</properties>
 
