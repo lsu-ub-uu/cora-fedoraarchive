@@ -55,8 +55,6 @@ public class FedoraRecordArchive implements RecordArchive {
 	}
 
 	private void tryToCreate(String id, DataGroup dataRecord) {
-		// TODO: do we need to store type in Fedora??? If yes, how???
-
 		String xml = xmlConverter.convert(dataRecord);
 		fedoraAdapter.create(id, xml);
 	}
