@@ -38,12 +38,12 @@ import se.uu.ub.cora.fedora.FedoraFactoryImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraRecordArchive;
 import se.uu.ub.cora.fedoraarchive.spy.ConverterFactorySpy;
 import se.uu.ub.cora.fedoraarchive.spy.FedoraFactorySpy;
-import se.uu.ub.cora.fedoraarchive.spy.LoggerFactorySpy;
-import se.uu.ub.cora.fedoraarchive.spy.LoggerSpy;
 import se.uu.ub.cora.logger.LoggerProvider;
 import se.uu.ub.cora.storage.StorageException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
+import se.uu.ub.cora.testspies.logger.LoggerFactorySpy;
+import se.uu.ub.cora.testspies.logger.LoggerSpy;
 
 public class FedoraRecordArchiveProviderTest {
 
@@ -51,8 +51,7 @@ public class FedoraRecordArchiveProviderTest {
 	private FedoraRecordArchiveProvider provider;
 	private String fedoraBaseUrl = "http://someFedoraUrl/";
 	private ConverterFactorySpy converterFactorySpy;
-	private LoggerFactorySpy loggerFactorySpy;
-	private String testedClassName = "FedoraRecordArchiveProvider";
+	private se.uu.ub.cora.testspies.logger.LoggerFactorySpy loggerFactorySpy;
 	FedoraRecordArchiveProviderExtendedForTest providerForTest;
 
 	@BeforeMethod

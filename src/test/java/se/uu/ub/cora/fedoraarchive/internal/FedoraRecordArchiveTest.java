@@ -25,19 +25,18 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import se.uu.ub.cora.data.DataGroup;
-import se.uu.ub.cora.fedoraarchive.spy.DataGroupSpy;
 import se.uu.ub.cora.fedoraarchive.spy.ExternallyConvertibleToStringConverterSpy;
 import se.uu.ub.cora.fedoraarchive.spy.FedoraAdapterSpy;
 import se.uu.ub.cora.storage.RecordConflictException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
+import se.uu.ub.cora.testspies.data.DataGroupSpy;
 
 public class FedoraRecordArchiveTest {
 
 	private FedoraAdapterSpy fedoraAdapterSpy;
 	private RecordArchive fedoraArchive;
-	private DataGroup someDataGroup;
+	private DataGroupSpy someDataGroup;
 	private ExternallyConvertibleToStringConverterSpy xmlConverterSpy;
 
 	@BeforeMethod
