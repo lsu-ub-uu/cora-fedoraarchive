@@ -21,52 +21,40 @@ package se.uu.ub.cora.fedoraarchive.spy;
 import java.io.InputStream;
 
 import se.uu.ub.cora.fedora.FedoraAdapter;
-import se.uu.ub.cora.fedora.FedoraConflictException;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
+import se.uu.ub.cora.testutils.mrv.MethodReturnValues;
 
 public class FedoraAdapterSpy implements FedoraAdapter {
-
 	public MethodCallRecorder MCR = new MethodCallRecorder();
-	public boolean throwExceptionOnCreateRecordAlreadyExists = false;
+	public MethodReturnValues MRV = new MethodReturnValues();
+
+	public FedoraAdapterSpy() {
+		MCR.useMRV(MRV);
+		MRV.setDefaultReturnValuesSupplier("read", String::new);
+	}
 
 	@Override
 	public void create(String recordId, String recordXml) {
 		MCR.addCall("recordId", recordId, "recordXml", recordXml);
-
-		if (throwExceptionOnCreateRecordAlreadyExists) {
-			throw FedoraConflictException.withMessage("From spy, record alreadyExists");
-		}
-
 	}
 
 	@Override
 	public void createBinary(String recordId, InputStream binary, String binaryContentType) {
 		MCR.addCall("recordId", recordId, "binary", binary, "binaryContentType", binaryContentType);
-
 	}
 
 	@Override
 	public String read(String recordId) {
-		MCR.addCall("recordId", recordId);
-
-		String dataArchived = "";
-		MCR.addReturned(dataArchived);
-		return dataArchived;
+		return (String) MCR.addCallAndReturnFromMRV("recordId", recordId);
 	}
 
 	@Override
 	public InputStream readBinary(String recordId) {
-		MCR.addCall("recordId", recordId);
-
-		InputStream stream = null;
-		MCR.addReturned(stream);
-		return stream;
+		return (InputStream) MCR.addCallAndReturnFromMRV("recordId", recordId);
 	}
 
 	@Override
 	public void update(String recordId, String recordXml) {
 		MCR.addCall("recordId", recordId, "recordXml", recordXml);
-
 	}
-
 }

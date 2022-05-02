@@ -31,15 +31,15 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>6.2.0</storage.version>
-		<fedora.version>2.2.0</fedora.version>
+		<storage.version>6.3-SNAPSHOT</storage.version>
+		<fedora.version>3.0-SNAPSHOT</fedora.version>
 		<coradata.version>7.0.0</coradata.version>
 		<json.version>3.3.0</json.version>
 		<logger.version>2.5.0</logger.version>
 		<converter.version>3.0.0</converter.version>
 		<xmlconverter.version>2.1.0</xmlconverter.version>
-		<testutils.version>1.4.0</testutils.version>
-		<testspies.version>1.0.0</testspies.version>
+		<testutils.version>1.5-SNAPSHOT</testutils.version>
+		<testspies.version>1.1-SNAPSHOT</testspies.version>
 	</properties>
 
 	<scm>

@@ -24,15 +24,21 @@ import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.data.DataGroup;
 import se.uu.ub.cora.fedora.FedoraAdapter;
 import se.uu.ub.cora.fedora.FedoraConflictException;
+import se.uu.ub.cora.fedora.FedoraNotFoundException;
 import se.uu.ub.cora.storage.RecordConflictException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 
 public class FedoraRecordArchive implements RecordArchive {
+	public static final String RECORD_CREATE_MESSAGE = ""
+			+ "Record could not be created in Fedora Archive for type: {0} and id: {1}";
+	public static final String RECORD_UPDATE_MISSING_MESSAGE = ""
+			+ "Record could not be found to update in Fedora Archive for type: {0} and id: {1}";
+	public static final String RECORD_UPDATE_MESSAGE = ""
+			+ "Record could not be updated in Fedora Archive for type: {0} and id: {1}";
 
 	private FedoraAdapter fedoraAdapter;
 	private ExternallyConvertibleToStringConverter xmlConverter;
-	private String pattern = "Record could not be created in Fedora Archive for type: {0} and id: {1}";
 
 	public FedoraRecordArchive(ExternallyConvertibleToStringConverter xmlConverter,
 			FedoraAdapter fedoraWrapper) {
@@ -43,20 +49,43 @@ public class FedoraRecordArchive implements RecordArchive {
 	@Override
 	public void create(String type, String id, DataGroup dataRecord) {
 		try {
-			String combinedId = type + ":" + id;
+			String combinedId = combineTypeAndId(type, id);
 			tryToCreate(combinedId, dataRecord);
 		} catch (FedoraConflictException e) {
-			throw RecordConflictException
-					.withMessageAndException(MessageFormat.format(pattern, type, id), e);
+			throw RecordConflictException.withMessageAndException(
+					MessageFormat.format(RECORD_CREATE_MESSAGE, type, id), e);
 		} catch (Exception e) {
-			throw ArchiveException.withMessageAndException(MessageFormat.format(pattern, type, id),
-					e);
+			throw ArchiveException.withMessageAndException(
+					MessageFormat.format(RECORD_CREATE_MESSAGE, type, id), e);
 		}
+	}
+
+	private String combineTypeAndId(String type, String id) {
+		return type + ":" + id;
 	}
 
 	private void tryToCreate(String id, DataGroup dataRecord) {
 		String xml = xmlConverter.convert(dataRecord);
 		fedoraAdapter.create(id, xml);
+	}
+
+	@Override
+	public void update(String type, String id, DataGroup dataRecord) {
+		try {
+			String combinedId = combineTypeAndId(type, id);
+			tryToUpdate(combinedId, dataRecord);
+		} catch (FedoraNotFoundException e) {
+			throw RecordConflictException.withMessageAndException(
+					MessageFormat.format(RECORD_UPDATE_MISSING_MESSAGE, type, id), e);
+		} catch (Exception e) {
+			throw ArchiveException.withMessageAndException(
+					MessageFormat.format(RECORD_UPDATE_MESSAGE, type, id), e);
+		}
+	}
+
+	private void tryToUpdate(String id, DataGroup dataRecord) {
+		String xml = xmlConverter.convert(dataRecord);
+		fedoraAdapter.update(id, xml);
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {
@@ -66,5 +95,4 @@ public class FedoraRecordArchive implements RecordArchive {
 	public ExternallyConvertibleToStringConverter onlyForTestGetXmlConverter() {
 		return xmlConverter;
 	}
-
 }

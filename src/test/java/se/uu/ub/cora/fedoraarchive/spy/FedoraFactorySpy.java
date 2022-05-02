@@ -21,16 +21,19 @@ package se.uu.ub.cora.fedoraarchive.spy;
 import se.uu.ub.cora.fedora.FedoraAdapter;
 import se.uu.ub.cora.fedora.FedoraFactory;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
+import se.uu.ub.cora.testutils.mrv.MethodReturnValues;
 
 public class FedoraFactorySpy implements FedoraFactory {
 	public MethodCallRecorder MCR = new MethodCallRecorder();
+	public MethodReturnValues MRV = new MethodReturnValues();
+
+	public FedoraFactorySpy() {
+		MCR.useMRV(MRV);
+		MRV.setDefaultReturnValuesSupplier("factorFedoraAdapter", FedoraAdapterSpy::new);
+	}
 
 	@Override
 	public FedoraAdapter factorFedoraAdapter() {
-		MCR.addCall();
-		FedoraAdapter fedoraAdapterSpy = new FedoraAdapterSpy();
-		MCR.addReturned(fedoraAdapterSpy);
-		return fedoraAdapterSpy;
+		return (FedoraAdapter) MCR.addCallAndReturnFromMRV();
 	}
-
 }

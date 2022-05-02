@@ -18,33 +18,32 @@
  */
 package se.uu.ub.cora.fedoraarchive.spy;
 
+import java.util.function.Supplier;
+
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.data.ExternallyConvertible;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
+import se.uu.ub.cora.testutils.mrv.MethodReturnValues;
 
 public class ExternallyConvertibleToStringConverterSpy
 		implements ExternallyConvertibleToStringConverter {
-
 	public MethodCallRecorder MCR = new MethodCallRecorder();
-	public String transformedXml = "<xml>someXml</xml>";
-	public boolean throwExceptionOnConvert = false;
+	public MethodReturnValues MRV = new MethodReturnValues();
+
+	public ExternallyConvertibleToStringConverterSpy() {
+		MCR.useMRV(MRV);
+		MRV.setDefaultReturnValuesSupplier("convert",
+				(Supplier<String>) () -> "<xml>someXml</xml>");
+	}
 
 	@Override
 	public String convert(ExternallyConvertible externallyConvertible) {
-		MCR.addCall("externallyConvertible", externallyConvertible);
-
-		if (throwExceptionOnConvert) {
-			throw new RuntimeException("Spy exception, error con xml convertion");
-		}
-
-		MCR.addReturned(transformedXml);
-		return transformedXml;
+		return (String) MCR.addCallAndReturnFromMRV("externallyConvertible", externallyConvertible);
 	}
 
 	@Override
 	public String convertWithLinks(ExternallyConvertible externallyConvertible, String baseUrl) {
-		// TODO Auto-generated method stub
-		return null;
+		return (String) MCR.addCallAndReturnFromMRV("externallyConvertible", externallyConvertible,
+				"baseUrl", baseUrl);
 	}
-
 }
