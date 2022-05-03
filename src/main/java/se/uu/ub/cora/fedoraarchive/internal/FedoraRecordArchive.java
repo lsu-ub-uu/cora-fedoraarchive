@@ -26,6 +26,7 @@ import se.uu.ub.cora.fedora.FedoraAdapter;
 import se.uu.ub.cora.fedora.FedoraConflictException;
 import se.uu.ub.cora.fedora.FedoraNotFoundException;
 import se.uu.ub.cora.storage.RecordConflictException;
+import se.uu.ub.cora.storage.RecordNotFoundException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 
@@ -75,7 +76,7 @@ public class FedoraRecordArchive implements RecordArchive {
 			String combinedId = combineTypeAndId(type, id);
 			tryToUpdate(combinedId, dataRecord);
 		} catch (FedoraNotFoundException e) {
-			throw RecordConflictException.withMessageAndException(
+			throw new RecordNotFoundException(
 					MessageFormat.format(RECORD_UPDATE_MISSING_MESSAGE, type, id), e);
 		} catch (Exception e) {
 			throw ArchiveException.withMessageAndException(

@@ -30,6 +30,7 @@ import se.uu.ub.cora.fedora.FedoraNotFoundException;
 import se.uu.ub.cora.fedoraarchive.spy.ExternallyConvertibleToStringConverterSpy;
 import se.uu.ub.cora.fedoraarchive.spy.FedoraAdapterSpy;
 import se.uu.ub.cora.storage.RecordConflictException;
+import se.uu.ub.cora.storage.RecordNotFoundException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 import se.uu.ub.cora.testspies.data.DataGroupSpy;
@@ -95,14 +96,14 @@ public class FedoraRecordArchiveTest {
 	}
 
 	@Test
-	public void testUpdateRecordAlreadyExists() throws Exception {
+	public void testUpdateRecordDoesNotExist() throws Exception {
 		fedoraAdapterSpy.MRV.setAlwaysThrowException("update",
 				FedoraNotFoundException.withMessage("From spy, record not found"));
 		try {
 			fedoraArchive.update("someType", "someId", someDataGroup);
 			assertFalse(true);
 		} catch (Exception e) {
-			assertTrue(e instanceof RecordConflictException);
+			assertTrue(e instanceof RecordNotFoundException);
 			assertEquals(e.getMessage(),
 					"Record could not be found to update in Fedora Archive for type: someType and id: someId");
 			assertEquals(e.getCause().getMessage(), "From spy, record not found");
