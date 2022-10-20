@@ -31,14 +31,15 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>6.4.0</storage.version>
-		<fedora.version>3.1.0</fedora.version>
-		<coradata.version>7.1.0</coradata.version>
-		<json.version>3.3.0</json.version>
+		<storage.version>7.0.0</storage.version>
+		<initialize.version>1.0.0</initialize.version>
+		<fedora.version>3.2.0</fedora.version>
+		<coradata.version>7.2.0</coradata.version>
+		<json.version>3.4.0</json.version>
 		<logger.version>2.5.0</logger.version>
-		<converter.version>3.1.0</converter.version>
-		<xmlconverter.version>2.2.0</xmlconverter.version>
-		<testutils.version>1.5.0</testutils.version>
+		<converter.version>3.2.0</converter.version>
+		<xmlconverter.version>2.3.0</xmlconverter.version>
+		<testutils.version>1.6.0</testutils.version>
 		<testspies.version>1.2.0</testspies.version>
 	</properties>
 
@@ -54,6 +55,11 @@
 			<groupId>se.uu.ub.cora</groupId>
 			<artifactId>storage</artifactId>
 			<version>${storage.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>se.uu.ub.cora</groupId>
+			<artifactId>initialize</artifactId>
+			<version>${initialize.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>se.uu.ub.cora</groupId>
