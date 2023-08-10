@@ -57,7 +57,7 @@ public class FedoraRecordArchiveTest {
 
 	@Test
 	public void testCreateRecordAlreadyExists() throws Exception {
-		fedoraAdapterSpy.MRV.setAlwaysThrowException("create",
+		fedoraAdapterSpy.MRV.setAlwaysThrowException("createRecord",
 				FedoraConflictException.withMessage("From spy, record alreadyExists"));
 		try {
 			fedoraArchive.create("someType", "someId", someDataGroup);
@@ -77,7 +77,7 @@ public class FedoraRecordArchiveTest {
 		xmlConverterSpy.MCR.assertParameters("convert", 0, someDataGroup);
 		String xml = (String) xmlConverterSpy.MCR.getReturnValue("convert", 0);
 
-		fedoraAdapterSpy.MCR.assertParameters("create", 0, "someType:someId", xml);
+		fedoraAdapterSpy.MCR.assertParameters("createRecord", 0, "someType:someId", xml);
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class FedoraRecordArchiveTest {
 
 	@Test
 	public void testUpdateRecordDoesNotExist() throws Exception {
-		fedoraAdapterSpy.MRV.setAlwaysThrowException("update",
+		fedoraAdapterSpy.MRV.setAlwaysThrowException("updateRecord",
 				FedoraNotFoundException.withMessage("From spy, record not found"));
 		try {
 			fedoraArchive.update("someType", "someId", someDataGroup);
@@ -117,7 +117,7 @@ public class FedoraRecordArchiveTest {
 		xmlConverterSpy.MCR.assertParameters("convert", 0, someDataGroup);
 		String xml = (String) xmlConverterSpy.MCR.getReturnValue("convert", 0);
 
-		fedoraAdapterSpy.MCR.assertParameters("update", 0, "someType:someId", xml);
+		fedoraAdapterSpy.MCR.assertParameters("updateRecord", 0, "someType:someId", xml);
 	}
 
 	@Test
