@@ -67,7 +67,7 @@ public class FedoraRecordArchive implements RecordArchive {
 
 	private void tryToCreate(String id, DataGroup dataRecord) {
 		String xml = xmlConverter.convert(dataRecord);
-		fedoraAdapter.create(id, xml);
+		fedoraAdapter.createRecord(id, xml);
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class FedoraRecordArchive implements RecordArchive {
 
 	private void tryToUpdate(String id, DataGroup dataRecord) {
 		String xml = xmlConverter.convert(dataRecord);
-		fedoraAdapter.update(id, xml);
+		fedoraAdapter.updateRecord(id, xml);
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {
