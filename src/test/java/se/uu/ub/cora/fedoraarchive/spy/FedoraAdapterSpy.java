@@ -30,7 +30,8 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 
 	public FedoraAdapterSpy() {
 		MCR.useMRV(MRV);
-		MRV.setDefaultReturnValuesSupplier("read", String::new);
+		MRV.setDefaultReturnValuesSupplier("readRecord", String::new);
+		MRV.setDefaultReturnValuesSupplier("readResource", InputStreamSpy::new);
 	}
 
 	@Override
