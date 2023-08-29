@@ -31,12 +31,16 @@ import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.RecordArchive;
 
 public class FedoraRecordArchive implements RecordArchive {
-	public static final String RECORD_CREATE_MESSAGE = ""
-			+ "Record could not be created in Fedora Archive for type: {0} and id: {1}";
+	public static final String RECORD_CREATE_CONFLICT_MESSAGE = ""
+			+ "Failed to create record due to already existing record id in Fedora Archive for type {0} "
+			+ "and id {1}.";
+	public static final String RECORD_CREATE_ERR_MESSAGE = ""
+			+ "Creation of record unsuccessful for type {0} and id {1}.";
 	public static final String RECORD_UPDATE_MISSING_MESSAGE = ""
-			+ "Record could not be found to update in Fedora Archive for type: {0} and id: {1}";
-	public static final String RECORD_UPDATE_MESSAGE = ""
-			+ "Record could not be updated in Fedora Archive for type: {0} and id: {1}";
+			+ "Update of record could not be executed since it was not located in Fedora Archive "
+			+ "for type {0} and id {1}.";
+	public static final String RECORD_UPDATE_ERR_MESSAGE = ""
+			+ "Unable to update record in Fedora Archive for type {0} and id {1}.";
 
 	private FedoraAdapter fedoraAdapter;
 	private ExternallyConvertibleToStringConverter xmlConverter;
@@ -54,10 +58,10 @@ public class FedoraRecordArchive implements RecordArchive {
 			tryToCreate(combinedId, dataRecord);
 		} catch (FedoraConflictException e) {
 			throw RecordConflictException.withMessageAndException(
-					MessageFormat.format(RECORD_CREATE_MESSAGE, type, id), e);
+					MessageFormat.format(RECORD_CREATE_CONFLICT_MESSAGE, type, id), e);
 		} catch (Exception e) {
 			throw ArchiveException.withMessageAndException(
-					MessageFormat.format(RECORD_CREATE_MESSAGE, type, id), e);
+					MessageFormat.format(RECORD_CREATE_ERR_MESSAGE, type, id), e);
 		}
 	}
 
@@ -76,11 +80,11 @@ public class FedoraRecordArchive implements RecordArchive {
 			String combinedId = combineTypeAndId(type, id);
 			tryToUpdate(combinedId, dataRecord);
 		} catch (FedoraNotFoundException e) {
-			throw new RecordNotFoundException(
+			throw RecordNotFoundException.withMessageAndException(
 					MessageFormat.format(RECORD_UPDATE_MISSING_MESSAGE, type, id), e);
 		} catch (Exception e) {
 			throw ArchiveException.withMessageAndException(
-					MessageFormat.format(RECORD_UPDATE_MESSAGE, type, id), e);
+					MessageFormat.format(RECORD_UPDATE_ERR_MESSAGE, type, id), e);
 		}
 	}
 
