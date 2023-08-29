@@ -104,4 +104,8 @@ public class FedoraResourceArchive implements ResourceArchive {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
+	public FedoraAdapter onlyForTestGetFedoraAdapter() {
+		return fedoraAdapter;
+	}
+
 }

@@ -6,6 +6,7 @@ import se.uu.ub.cora.fedoraarchive.FedoraRecordArchiveProvider;
  */
 module se.uu.ub.cora.fedoraarchive {
 	requires se.uu.ub.cora.storage;
+	requires se.uu.ub.cora.initialize;
 	requires se.uu.ub.cora.fedora;
 	requires se.uu.ub.cora.converter;
 	requires se.uu.ub.cora.httphandler;
