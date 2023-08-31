@@ -35,37 +35,37 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 	}
 
 	@Override
-	public void createRecord(String recordId, String recordXml) {
+	public void createRecord(String dataDivider, String recordId, String recordXml) {
 		MCR.addCall("recordId", recordId, "recordXml", recordXml);
 	}
 
 	@Override
-	public void createResource(String resourceId, InputStream resource, String mimeType) {
+	public void createResource(String dataDivider, String resourceId, InputStream resource, String mimeType) {
 		MCR.addCall("recordId", resourceId, "resource", resource, "binaryContentType", mimeType);
 	}
 
 	@Override
-	public String readRecord(String recordId) {
+	public String readRecord(String dataDivider, String recordId) {
 		return (String) MCR.addCallAndReturnFromMRV("recordId", recordId);
 	}
 
 	@Override
-	public InputStream readResource(String resourceId) {
+	public InputStream readResource(String dataDivider, String resourceId) {
 		return (InputStream) MCR.addCallAndReturnFromMRV("resourceId", resourceId);
 	}
 
 	@Override
-	public void updateRecord(String recordId, String recordXml) {
+	public void updateRecord(String dataDivider, String recordId, String recordXml) {
 		MCR.addCall("recordId", recordId, "recordXml", recordXml);
 	}
 
 	@Override
-	public void updateResource(String resourceId, InputStream resource, String mimeType) {
+	public void updateResource(String dataDivider, String resourceId, InputStream resource, String mimeType) {
 		MCR.addCall("resourceId", resourceId, "resource", resource, "mimeType", mimeType);
 	}
 
 	@Override
-	public void delete(String id) {
-		MCR.addCall("id", id);
+	public void deleteRecord(String dataDivider, String recordId) {
+		MCR.addCall("id", recordId);
 	}
 }

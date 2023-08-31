@@ -67,7 +67,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 
 	private void createResource(String type, String id, InputStream resource, String mimeType) {
 		String archiveId = ensembleId(type, id);
-		fedoraAdapter.createResource(archiveId, resource, mimeType);
+		fedoraAdapter.createResource(null, archiveId, resource, mimeType);
 	}
 
 	private String ensembleId(String type, String id) {
@@ -103,7 +103,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 
 	private InputStream readResource(String type, String id) {
 		String archiveId = ensembleId(type, id);
-		return fedoraAdapter.readResource(archiveId);
+		return fedoraAdapter.readResource(null, archiveId);
 	}
 
 	private ResourceNotFoundException createResourceNotFoundException(String message, String type,
