@@ -52,6 +52,7 @@ public class FedoraResourceArchiveTest {
 
 	private static final String SOME_MESSAGE = "someMessage";
 	private static final String SOME_MIME_TYPE = "someMimeType";
+	private static final String SOME_DATA_DIVIDER = "someDataDivider";
 	private static final String SOME_ID = "someId";
 	private static final String SOME_TYPE = "someType";
 	private static final String ARCHIVE_ID_FORMAT = "{0}:{1}-master";
@@ -71,9 +72,10 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testCreate() throws Exception {
 
-		archive.create(SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+		archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 
-		fedoraAdapter.MCR.assertParameters("createResource", 0, expectedId, stream, SOME_MIME_TYPE);
+		fedoraAdapter.MCR.assertParameters("createResource", 0, SOME_DATA_DIVIDER, expectedId,
+				stream, SOME_MIME_TYPE);
 	}
 
 	@Test
@@ -82,7 +84,7 @@ public class FedoraResourceArchiveTest {
 				FedoraConflictException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceConflictException);
@@ -98,7 +100,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -114,7 +116,7 @@ public class FedoraResourceArchiveTest {
 				new RuntimeException(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -127,9 +129,9 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testRead() throws Exception {
 
-		InputStream readResource = archive.read(SOME_TYPE, SOME_ID);
+		InputStream readResource = archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 
-		fedoraAdapter.MCR.assertParameters("readResource", 0, expectedId);
+		fedoraAdapter.MCR.assertParameters("readResource", 0, SOME_DATA_DIVIDER, expectedId);
 		assertTrue(readResource instanceof InputStream);
 	}
 
@@ -139,7 +141,7 @@ public class FedoraResourceArchiveTest {
 				FedoraNotFoundException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_TYPE, SOME_ID);
+			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
@@ -155,7 +157,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_TYPE, SOME_ID);
+			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -171,7 +173,7 @@ public class FedoraResourceArchiveTest {
 				new RuntimeException(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_TYPE, SOME_ID);
+			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -184,12 +186,12 @@ public class FedoraResourceArchiveTest {
 	@Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not implemented yet")
 	public void testUpdateUnsupported() throws Exception {
 
-		archive.update(null, null, null, null);
+		archive.update(null, null, null, null, null);
 	}
 
 	@Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not implemented yet")
 	public void testDeleteUnsupported() throws Exception {
 
-		archive.delete(null, null);
+		archive.delete(null, null, null);
 	}
 }

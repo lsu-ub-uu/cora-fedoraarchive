@@ -36,36 +36,48 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 
 	@Override
 	public void createRecord(String dataDivider, String recordId, String recordXml) {
-		MCR.addCall("recordId", recordId, "recordXml", recordXml);
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId, "recordXml", recordXml);
 	}
 
 	@Override
-	public void createResource(String dataDivider, String resourceId, InputStream resource, String mimeType) {
-		MCR.addCall("recordId", resourceId, "resource", resource, "binaryContentType", mimeType);
+	public void createResource(String dataDivider, String resourceId, InputStream resource,
+			String mimeType) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", resourceId, "resource", resource,
+				"binaryContentType", mimeType);
 	}
 
 	@Override
 	public String readRecord(String dataDivider, String recordId) {
-		return (String) MCR.addCallAndReturnFromMRV("recordId", recordId);
+		return (String) MCR.addCallAndReturnFromMRV("dataDivider", dataDivider, "recordId",
+				recordId);
 	}
 
 	@Override
 	public InputStream readResource(String dataDivider, String resourceId) {
-		return (InputStream) MCR.addCallAndReturnFromMRV("resourceId", resourceId);
+		return (InputStream) MCR.addCallAndReturnFromMRV("dataDivider", dataDivider, "resourceId",
+				resourceId);
 	}
 
 	@Override
 	public void updateRecord(String dataDivider, String recordId, String recordXml) {
-		MCR.addCall("recordId", recordId, "recordXml", recordXml);
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId, "recordXml", recordXml);
 	}
 
 	@Override
-	public void updateResource(String dataDivider, String resourceId, InputStream resource, String mimeType) {
-		MCR.addCall("resourceId", resourceId, "resource", resource, "mimeType", mimeType);
+	public void updateResource(String dataDivider, String resourceId, InputStream resource,
+			String mimeType) {
+		MCR.addCall("dataDivider", dataDivider, "resourceId", resourceId, "resource", resource,
+				"mimeType", mimeType);
 	}
 
 	@Override
 	public void deleteRecord(String dataDivider, String recordId) {
-		MCR.addCall("id", recordId);
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId);
+	}
+
+	@Override
+	public void deleteResource(String dataDivider, String resourceId) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", resourceId);
+
 	}
 }

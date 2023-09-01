@@ -72,7 +72,7 @@ public class FedoraRecordArchiveProviderTest {
 	}
 
 	@Test
-	public void testInit() throws Exception {
+	public void testGetOrderToSelectImplementionsBy() throws Exception {
 		assertEquals(provider.getOrderToSelectImplementionsBy(), 0);
 	}
 

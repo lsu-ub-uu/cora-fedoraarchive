@@ -52,10 +52,10 @@ public class FedoraRecordArchive implements RecordArchive {
 	}
 
 	@Override
-	public void create(String type, String id, DataGroup dataRecord) {
+	public void create(String dataDivider, String type, String id, DataGroup dataRecord) {
 		try {
 			String combinedId = combineTypeAndId(type, id);
-			tryToCreate(combinedId, dataRecord);
+			tryToCreate(dataDivider, combinedId, dataRecord);
 		} catch (FedoraConflictException e) {
 			throw RecordConflictException.withMessageAndException(
 					MessageFormat.format(RECORD_CREATE_CONFLICT_MESSAGE, type, id), e);
@@ -69,16 +69,16 @@ public class FedoraRecordArchive implements RecordArchive {
 		return type + ":" + id;
 	}
 
-	private void tryToCreate(String id, DataGroup dataRecord) {
+	private void tryToCreate(String dataDivider, String id, DataGroup dataRecord) {
 		String xml = xmlConverter.convert(dataRecord);
-		fedoraAdapter.createRecord(null, id, xml);
+		fedoraAdapter.createRecord(dataDivider, id, xml);
 	}
 
 	@Override
-	public void update(String type, String id, DataGroup dataRecord) {
+	public void update(String dataDivider, String type, String id, DataGroup dataRecord) {
 		try {
 			String combinedId = combineTypeAndId(type, id);
-			tryToUpdate(combinedId, dataRecord);
+			tryToUpdate(dataDivider, combinedId, dataRecord);
 		} catch (FedoraNotFoundException e) {
 			throw RecordNotFoundException.withMessageAndException(
 					MessageFormat.format(RECORD_UPDATE_MISSING_MESSAGE, type, id), e);
@@ -88,9 +88,9 @@ public class FedoraRecordArchive implements RecordArchive {
 		}
 	}
 
-	private void tryToUpdate(String id, DataGroup dataRecord) {
+	private void tryToUpdate(String dataDivider, String id, DataGroup dataRecord) {
 		String xml = xmlConverter.convert(dataRecord);
-		fedoraAdapter.updateRecord(null, id, xml);
+		fedoraAdapter.updateRecord(dataDivider, id, xml);
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {

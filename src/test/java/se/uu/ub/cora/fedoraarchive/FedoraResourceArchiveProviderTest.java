@@ -28,6 +28,7 @@ import java.util.Map;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import se.uu.ub.cora.fedora.FedoraAdapter;
 import se.uu.ub.cora.fedora.FedoraFactory;
 import se.uu.ub.cora.fedora.FedoraFactoryImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraResourceArchive;
@@ -40,7 +41,7 @@ import se.uu.ub.cora.testspies.logger.LoggerFactorySpy;
 
 public class FedoraResourceArchiveProviderTest {
 
-	private static final String SOME_FEDORA_ARCHIVE_URL = "someFedoraArchiveURLa";
+	private static final String SOME_FEDORA_ARCHIVE_URL = "someFedoraArchiveUrl";
 	FedoraResourceArchiveProvider provider;
 	FedoraAdapterSpy fedoraAdapterSpy = new FedoraAdapterSpy();
 	FedoraFactorySpy fedoraFactorySpy = new FedoraFactorySpy();
@@ -59,12 +60,17 @@ public class FedoraResourceArchiveProviderTest {
 	}
 
 	@Test
+	public void testGetOrderToSelectImplementionsBy() throws Exception {
+		assertEquals(provider.getOrderToSelectImplementionsBy(), 0);
+	}
+
+	@Test
 	public void testiImplementsResourceArchiveInstanceProvider() throws Exception {
 		assertTrue(provider instanceof ResourceArchiveInstanceProvider);
 	}
 
 	@Test
-	public void testGetResourceArchive() throws Exception {
+	public void testGetResourceArchiveCorrectUrl() throws Exception {
 		FedoraResourceArchive resourceArchive = (FedoraResourceArchive) provider
 				.getResourceArchive();
 
@@ -75,12 +81,16 @@ public class FedoraResourceArchiveProviderTest {
 	}
 
 	@Test
-	public void testName() throws Exception {
+	public void testGetResourceArchiveFactorFedoraAdapter() throws Exception {
 		fedoraFactorySpy.MRV.setDefaultReturnValuesSupplier("factorFedoraAdapter",
 				() -> fedoraAdapterSpy);
 		FedoraRecordArchiveProviderExtendedForTest providerForTest = new FedoraRecordArchiveProviderExtendedForTest();
-		providerForTest.getResourceArchive();
 
+		FedoraResourceArchive resourceArchive = (FedoraResourceArchive) providerForTest
+				.getResourceArchive();
+
+		FedoraAdapter fedoraAdapter = resourceArchive.onlyForTestGetFedoraAdapter();
+		fedoraFactorySpy.MCR.assertReturn("factorFedoraAdapter", 0, fedoraAdapter);
 		fedoraFactorySpy.MCR.assertParameters("factorFedoraAdapter", 0);
 
 	}
