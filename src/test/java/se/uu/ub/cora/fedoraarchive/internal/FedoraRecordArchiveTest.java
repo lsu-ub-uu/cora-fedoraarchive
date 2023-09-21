@@ -22,6 +22,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.text.MessageFormat;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -37,10 +39,25 @@ import se.uu.ub.cora.testspies.data.DataGroupSpy;
 
 public class FedoraRecordArchiveTest {
 
-	private FedoraAdapterSpy fedoraAdapterSpy;
 	private RecordArchive fedoraArchive;
+	private FedoraAdapterSpy fedoraAdapterSpy;
 	private DataGroupSpy someDataGroup;
 	private ExternallyConvertibleToStringConverterSpy xmlConverterSpy;
+
+	private static final String SOME_DATA_DIVIDER = "someDataDivider";
+	private static final String SOME_ID = "someId";
+	private static final String SOME_TYPE = "someType";
+
+	public static final String RECORD_CREATE_CONFLICT_MESSAGE = ""
+			+ "Failed to create record due to already existing record id in Fedora Archive for type {0} "
+			+ "and id {1}.";
+	public static final String RECORD_CREATE_ERR_MESSAGE = ""
+			+ "Creation of record unsuccessful for type {0} and id {1}.";
+	public static final String RECORD_UPDATE_MISSING_MESSAGE = ""
+			+ "Update of record could not be executed since it was not located in Fedora Archive "
+			+ "for type {0} and id {1}.";
+	public static final String RECORD_UPDATE_ERR_MESSAGE = ""
+			+ "Unable to update record in Fedora Archive for type {0} and id {1}.";
 
 	@BeforeMethod
 	public void beforeMethod() {
@@ -51,33 +68,29 @@ public class FedoraRecordArchiveTest {
 	}
 
 	@Test
-	public void testinit() throws Exception {
-		fedoraArchive.create("someType", "someId", someDataGroup);
-	}
-
-	@Test
 	public void testCreateRecordAlreadyExists() throws Exception {
-		fedoraAdapterSpy.MRV.setAlwaysThrowException("create",
+		fedoraAdapterSpy.MRV.setAlwaysThrowException("createRecord",
 				FedoraConflictException.withMessage("From spy, record alreadyExists"));
 		try {
-			fedoraArchive.create("someType", "someId", someDataGroup);
+			fedoraArchive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof RecordConflictException);
 			assertEquals(e.getMessage(),
-					"Record could not be created in Fedora Archive for type: someType and id: someId");
+					MessageFormat.format(RECORD_CREATE_CONFLICT_MESSAGE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), "From spy, record alreadyExists");
 		}
 	}
 
 	@Test
 	public void testCreateRecordInFedora() throws Exception {
-		fedoraArchive.create("someType", "someId", someDataGroup);
+		fedoraArchive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 
 		xmlConverterSpy.MCR.assertParameters("convert", 0, someDataGroup);
 		String xml = (String) xmlConverterSpy.MCR.getReturnValue("convert", 0);
 
-		fedoraAdapterSpy.MCR.assertParameters("create", 0, "someType:someId", xml);
+		fedoraAdapterSpy.MCR.assertParameters("createRecord", 0, SOME_DATA_DIVIDER,
+				"someType:someId", xml);
 	}
 
 	@Test
@@ -85,39 +98,40 @@ public class FedoraRecordArchiveTest {
 		xmlConverterSpy.MRV.setAlwaysThrowException("convert",
 				new RuntimeException("Spy exception, error con xml convertion"));
 		try {
-			fedoraArchive.create("someType", "someId", someDataGroup);
+			fedoraArchive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
 			assertEquals(e.getMessage(),
-					"Record could not be created in Fedora Archive for type: someType and id: someId");
+					MessageFormat.format(RECORD_CREATE_ERR_MESSAGE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), "Spy exception, error con xml convertion");
 		}
 	}
 
 	@Test
 	public void testUpdateRecordDoesNotExist() throws Exception {
-		fedoraAdapterSpy.MRV.setAlwaysThrowException("update",
+		fedoraAdapterSpy.MRV.setAlwaysThrowException("updateRecord",
 				FedoraNotFoundException.withMessage("From spy, record not found"));
 		try {
-			fedoraArchive.update("someType", "someId", someDataGroup);
+			fedoraArchive.update(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof RecordNotFoundException);
 			assertEquals(e.getMessage(),
-					"Record could not be found to update in Fedora Archive for type: someType and id: someId");
+					MessageFormat.format(RECORD_UPDATE_MISSING_MESSAGE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), "From spy, record not found");
 		}
 	}
 
 	@Test
 	public void testUpdateRecordInFedora() throws Exception {
-		fedoraArchive.update("someType", "someId", someDataGroup);
+		fedoraArchive.update(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 
 		xmlConverterSpy.MCR.assertParameters("convert", 0, someDataGroup);
 		String xml = (String) xmlConverterSpy.MCR.getReturnValue("convert", 0);
 
-		fedoraAdapterSpy.MCR.assertParameters("update", 0, "someType:someId", xml);
+		fedoraAdapterSpy.MCR.assertParameters("updateRecord", 0, SOME_DATA_DIVIDER,
+				"someType:someId", xml);
 	}
 
 	@Test
@@ -125,12 +139,12 @@ public class FedoraRecordArchiveTest {
 		xmlConverterSpy.MRV.setAlwaysThrowException("convert",
 				new RuntimeException("Spy exception, error con xml convertion"));
 		try {
-			fedoraArchive.update("someType", "someId", someDataGroup);
+			fedoraArchive.update(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, someDataGroup);
 			assertFalse(true);
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
 			assertEquals(e.getMessage(),
-					"Record could not be updated in Fedora Archive for type: someType and id: someId");
+					MessageFormat.format(RECORD_UPDATE_ERR_MESSAGE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), "Spy exception, error con xml convertion");
 		}
 	}

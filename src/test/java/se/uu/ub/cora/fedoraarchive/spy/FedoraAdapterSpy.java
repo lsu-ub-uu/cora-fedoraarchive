@@ -30,31 +30,54 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 
 	public FedoraAdapterSpy() {
 		MCR.useMRV(MRV);
-		MRV.setDefaultReturnValuesSupplier("read", String::new);
+		MRV.setDefaultReturnValuesSupplier("readRecord", String::new);
+		MRV.setDefaultReturnValuesSupplier("readResource", InputStreamSpy::new);
 	}
 
 	@Override
-	public void create(String recordId, String recordXml) {
-		MCR.addCall("recordId", recordId, "recordXml", recordXml);
+	public void createRecord(String dataDivider, String recordId, String recordXml) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId, "recordXml", recordXml);
 	}
 
 	@Override
-	public void createBinary(String recordId, InputStream binary, String binaryContentType) {
-		MCR.addCall("recordId", recordId, "binary", binary, "binaryContentType", binaryContentType);
+	public void createResource(String dataDivider, String resourceId, InputStream resource,
+			String mimeType) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", resourceId, "resource", resource,
+				"binaryContentType", mimeType);
 	}
 
 	@Override
-	public String read(String recordId) {
-		return (String) MCR.addCallAndReturnFromMRV("recordId", recordId);
+	public String readRecord(String dataDivider, String recordId) {
+		return (String) MCR.addCallAndReturnFromMRV("dataDivider", dataDivider, "recordId",
+				recordId);
 	}
 
 	@Override
-	public InputStream readBinary(String recordId) {
-		return (InputStream) MCR.addCallAndReturnFromMRV("recordId", recordId);
+	public InputStream readResource(String dataDivider, String resourceId) {
+		return (InputStream) MCR.addCallAndReturnFromMRV("dataDivider", dataDivider, "resourceId",
+				resourceId);
 	}
 
 	@Override
-	public void update(String recordId, String recordXml) {
-		MCR.addCall("recordId", recordId, "recordXml", recordXml);
+	public void updateRecord(String dataDivider, String recordId, String recordXml) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId, "recordXml", recordXml);
+	}
+
+	@Override
+	public void updateResource(String dataDivider, String resourceId, InputStream resource,
+			String mimeType) {
+		MCR.addCall("dataDivider", dataDivider, "resourceId", resourceId, "resource", resource,
+				"mimeType", mimeType);
+	}
+
+	@Override
+	public void deleteRecord(String dataDivider, String recordId) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", recordId);
+	}
+
+	@Override
+	public void deleteResource(String dataDivider, String resourceId) {
+		MCR.addCall("dataDivider", dataDivider, "recordId", resourceId);
+
 	}
 }

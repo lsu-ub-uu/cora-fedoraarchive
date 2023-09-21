@@ -51,7 +51,7 @@ public class FedoraRecordArchiveProviderTest {
 	private FedoraRecordArchiveProvider provider;
 	private String fedoraBaseUrl = "http://someFedoraUrl/";
 	private ConverterFactorySpy converterFactorySpy;
-	private se.uu.ub.cora.testspies.logger.LoggerFactorySpy loggerFactorySpy;
+	private LoggerFactorySpy loggerFactorySpy;
 	FedoraRecordArchiveProviderExtendedForTest providerForTest;
 
 	@BeforeMethod
@@ -72,7 +72,7 @@ public class FedoraRecordArchiveProviderTest {
 	}
 
 	@Test
-	public void testInit() throws Exception {
+	public void testGetOrderToSelectImplementionsBy() throws Exception {
 		assertEquals(provider.getOrderToSelectImplementionsBy(), 0);
 	}
 
