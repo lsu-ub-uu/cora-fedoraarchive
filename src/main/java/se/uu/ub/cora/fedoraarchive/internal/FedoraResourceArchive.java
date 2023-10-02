@@ -28,6 +28,7 @@ import se.uu.ub.cora.storage.ResourceConflictException;
 import se.uu.ub.cora.storage.ResourceNotFoundException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.ResourceArchive;
+import se.uu.ub.cora.storage.archive.ResourceMetadata;
 
 public class FedoraResourceArchive implements ResourceArchive {
 
@@ -112,6 +113,12 @@ public class FedoraResourceArchive implements ResourceArchive {
 			String id, FedoraNotFoundException e) {
 		String formatedMessage = MessageFormat.format(message, type, id);
 		return ResourceNotFoundException.withMessageAndException(formatedMessage, e);
+	}
+
+	@Override
+	public ResourceMetadata readMetadata(String dataDivider, String type, String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
