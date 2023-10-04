@@ -19,7 +19,6 @@
 package se.uu.ub.cora.fedoraarchive;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import se.uu.ub.cora.fedora.FedoraAdapter;
-import se.uu.ub.cora.fedora.FedoraFactory;
 import se.uu.ub.cora.fedora.FedoraFactoryImp;
 import se.uu.ub.cora.fedoraarchive.internal.FedoraResourceArchive;
 import se.uu.ub.cora.fedoraarchive.spy.FedoraAdapterSpy;
@@ -50,13 +48,20 @@ public class FedoraResourceArchiveProviderTest {
 
 	@BeforeMethod
 	public void beforeMethod() {
-		provider = new FedoraResourceArchiveProvider();
 		settings = new HashMap<>();
 		settings.put("fedoraArchiveURL", SOME_FEDORA_ARCHIVE_URL);
 		loggerFactorySpy = new LoggerFactorySpy();
 		LoggerProvider.setLoggerFactory(loggerFactorySpy);
 		SettingsProvider.setSettings(settings);
 
+		provider = new FedoraResourceArchiveProvider();
+	}
+
+	@Test
+	public void testCreateFedoraFactoryOnConstruction() throws Exception {
+		FedoraFactoryImp fedoraFactory = (FedoraFactoryImp) provider.onlyForTestgetFedoraFactory();
+
+		assertEquals(fedoraFactory.onlyForTestGetBaseUrl(), SOME_FEDORA_ARCHIVE_URL);
 	}
 
 	@Test
@@ -71,22 +76,16 @@ public class FedoraResourceArchiveProviderTest {
 
 	@Test
 	public void testGetResourceArchiveCorrectUrl() throws Exception {
-		FedoraResourceArchive resourceArchive = (FedoraResourceArchive) provider
-				.getResourceArchive();
 
-		assertNotNull(resourceArchive);
-		assertTrue(resourceArchive instanceof FedoraResourceArchive);
 		FedoraFactoryImp fedoraFactory = (FedoraFactoryImp) provider.onlyForTestgetFedoraFactory();
 		assertEquals(fedoraFactory.onlyForTestGetBaseUrl(), SOME_FEDORA_ARCHIVE_URL);
 	}
 
 	@Test
 	public void testGetResourceArchiveFactorFedoraAdapter() throws Exception {
-		fedoraFactorySpy.MRV.setDefaultReturnValuesSupplier("factorFedoraAdapter",
-				() -> fedoraAdapterSpy);
-		FedoraRecordArchiveProviderExtendedForTest providerForTest = new FedoraRecordArchiveProviderExtendedForTest();
+		setFedoraFactorySpy();
 
-		FedoraResourceArchive resourceArchive = (FedoraResourceArchive) providerForTest
+		FedoraResourceArchive resourceArchive = (FedoraResourceArchive) provider
 				.getResourceArchive();
 
 		FedoraAdapter fedoraAdapter = resourceArchive.onlyForTestGetFedoraAdapter();
@@ -95,12 +94,19 @@ public class FedoraResourceArchiveProviderTest {
 
 	}
 
-	public class FedoraRecordArchiveProviderExtendedForTest extends FedoraResourceArchiveProvider {
+	private void setFedoraFactorySpy() {
+		fedoraFactorySpy = new FedoraFactorySpy();
+		provider.onlyForTestSetFedoraFactory(fedoraFactorySpy);
+	}
 
-		@Override
-		public FedoraFactory createFedoraFactoryUsingUrlSettingName(String urlSettingName) {
-			return fedoraFactorySpy;
-		}
+	@Test
+	public void testSameFactoryForEachCallToGetResourceArchive() throws Exception {
+		setFedoraFactorySpy();
+
+		provider.getResourceArchive();
+		provider.getResourceArchive();
+
+		fedoraFactorySpy.MCR.assertNumberOfCallsToMethod("factorFedoraAdapter", 2);
 	}
 
 }

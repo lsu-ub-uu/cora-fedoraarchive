@@ -53,6 +53,7 @@ public class FedoraRecordArchiveProviderTest {
 	private ConverterFactorySpy converterFactorySpy;
 	private LoggerFactorySpy loggerFactorySpy;
 	FedoraRecordArchiveProviderExtendedForTest providerForTest;
+	private FedoraFactorySpy fedoraFactorySpy;
 
 	@BeforeMethod
 	public void beforeMethod() {
@@ -69,6 +70,7 @@ public class FedoraRecordArchiveProviderTest {
 		LoggerProvider.setLoggerFactory(loggerFactorySpy);
 		converterFactorySpy = new ConverterFactorySpy();
 		ConverterProvider.setConverterFactory("xml", converterFactorySpy);
+
 	}
 
 	@Test
@@ -92,7 +94,7 @@ public class FedoraRecordArchiveProviderTest {
 
 	@Test
 	public void testGetRecordArchive() throws Exception {
-		provider.startUsingInitInfo(initInfo);
+		setFedoraFactorySpy();
 
 		RecordArchive recordArchive = provider.getRecordArchive();
 
@@ -100,21 +102,26 @@ public class FedoraRecordArchiveProviderTest {
 		assertTrue(recordArchive instanceof FedoraRecordArchive);
 	}
 
+	private void setFedoraFactorySpy() {
+		fedoraFactorySpy = new FedoraFactorySpy();
+		provider.onlyForTestSetFedoraFactory(fedoraFactorySpy);
+	}
+
 	@Test
 	public void testGetRecordArchiveCreatedWithConverterDependency() throws Exception {
-		provider.startUsingInitInfo(initInfo);
+		setFedoraFactorySpy();
+
 		FedoraRecordArchive fedoraRecordArchive = (FedoraRecordArchive) provider.getRecordArchive();
 
 		ExternallyConvertibleToStringConverter converter = fedoraRecordArchive
 				.onlyForTestGetXmlConverter();
-
 		assertSame(converterFactorySpy.MCR
 				.getReturnValue("factorExternallyConvertableToStringConverter", 0), converter);
 	}
 
 	@Test
 	public void testGetRecordArchiveTwiceReturnsTwoDifferentInstances() throws Exception {
-		provider.startUsingInitInfo(initInfo);
+		setFedoraFactorySpy();
 
 		RecordArchive recordArchive = provider.getRecordArchive();
 		RecordArchive recordArchive2 = provider.getRecordArchive();
@@ -150,8 +157,10 @@ public class FedoraRecordArchiveProviderTest {
 
 	@Test
 	public void testNormalStartupReturnsFedoraRecordArchive() {
-		provider.startUsingInitInfo(initInfo);
+		setFedoraFactorySpy();
+
 		RecordArchive recordArchive = provider.getRecordArchive();
+
 		assertTrue(recordArchive instanceof FedoraRecordArchive);
 	}
 

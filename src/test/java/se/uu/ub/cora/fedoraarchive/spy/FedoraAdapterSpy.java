@@ -21,6 +21,7 @@ package se.uu.ub.cora.fedoraarchive.spy;
 import java.io.InputStream;
 
 import se.uu.ub.cora.fedora.FedoraAdapter;
+import se.uu.ub.cora.fedora.ResourceMetadata;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 import se.uu.ub.cora.testutils.mrv.MethodReturnValues;
 
@@ -32,6 +33,8 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 		MCR.useMRV(MRV);
 		MRV.setDefaultReturnValuesSupplier("readRecord", String::new);
 		MRV.setDefaultReturnValuesSupplier("readResource", InputStreamSpy::new);
+		MRV.setDefaultReturnValuesSupplier("readResourceMetadata",
+				() -> new ResourceMetadata("someFileSize", "someChecksum"));
 	}
 
 	@Override
@@ -59,6 +62,12 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 	}
 
 	@Override
+	public ResourceMetadata readResourceMetadata(String dataDivider, String resourceId) {
+		return (ResourceMetadata) MCR.addCallAndReturnFromMRV("dataDivider", dataDivider,
+				"resourceId", resourceId);
+	}
+
+	@Override
 	public void updateRecord(String dataDivider, String recordId, String recordXml) {
 		MCR.addCall("dataDivider", dataDivider, "recordId", recordId, "recordXml", recordXml);
 	}
@@ -77,7 +86,6 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 
 	@Override
 	public void deleteResource(String dataDivider, String resourceId) {
-		MCR.addCall("dataDivider", dataDivider, "recordId", resourceId);
-
+		MCR.addCall("dataDivider", dataDivider, "resourceId", resourceId);
 	}
 }
