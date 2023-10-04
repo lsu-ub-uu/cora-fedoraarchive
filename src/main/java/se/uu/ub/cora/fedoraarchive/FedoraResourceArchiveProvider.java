@@ -28,7 +28,8 @@ import se.uu.ub.cora.storage.archive.ResourceArchiveInstanceProvider;
 public class FedoraResourceArchiveProvider implements ResourceArchiveInstanceProvider {
 
 	private static final String FEDORA_ARCHIVE_URL = "fedoraArchiveURL";
-	private FedoraFactory fedoraFactory;
+	private FedoraFactory fedoraFactory = new FedoraFactoryImp(
+			SettingsProvider.getSetting(FEDORA_ARCHIVE_URL));
 
 	@Override
 	public int getOrderToSelectImplementionsBy() {
@@ -37,15 +38,14 @@ public class FedoraResourceArchiveProvider implements ResourceArchiveInstancePro
 
 	@Override
 	public ResourceArchive getResourceArchive() {
-		fedoraFactory = createFedoraFactoryUsingUrlSettingName(FEDORA_ARCHIVE_URL);
 		return new FedoraResourceArchive(fedoraFactory.factorFedoraAdapter());
-	}
-
-	FedoraFactory createFedoraFactoryUsingUrlSettingName(String urlSettingName) {
-		return new FedoraFactoryImp(SettingsProvider.getSetting(urlSettingName));
 	}
 
 	FedoraFactory onlyForTestgetFedoraFactory() {
 		return fedoraFactory;
+	}
+
+	void onlyForTestSetFedoraFactory(FedoraFactory fedoraFactory) {
+		this.fedoraFactory = fedoraFactory;
 	}
 }

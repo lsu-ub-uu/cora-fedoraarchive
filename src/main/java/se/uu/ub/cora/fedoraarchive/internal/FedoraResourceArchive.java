@@ -28,19 +28,25 @@ import se.uu.ub.cora.storage.ResourceConflictException;
 import se.uu.ub.cora.storage.ResourceNotFoundException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
 import se.uu.ub.cora.storage.archive.ResourceArchive;
+import se.uu.ub.cora.storage.archive.ResourceMetadata;
 
 public class FedoraResourceArchive implements ResourceArchive {
 
-	public static final String RESOURCE_CREATE_CONFLICT_MESSAGE = ""
-			+ "Failed to create record due to already existing record id in Fedora Archive for type {0}"
+	public static final String ERR_MSG_CREATE_CONFLICT = ""
+			+ "Failed to create resource due to already existing record id in Fedora Archive for type {0}"
 			+ " and id {1}.";
-	public static final String RESOURCE_CREATE_ERR_MESSAGE = ""
-			+ "Creation of record unsuccessful for type {0} and id {1}.";
-	public static final String RESOURCE_READ_MISSING_MESSAGE = ""
-			+ "Failed to read record due to it could not be found in Fedora Archive for type {0}"
+	public static final String ERR_MSG_CREATE = ""
+			+ "Creation of resource unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_MISSING = ""
+			+ "Failed to read resource due to it could not be found in Fedora Archive for type {0}"
 			+ " and id {1}.";
-	public static final String RESOURCE_READ_ERR_MESSAGE = ""
-			+ "Reading of record unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_METADATA_NOT_FOUND = ""
+			+ "Failed to read metadata for resource due to it could not be found in Fedora Archive for type {0}"
+			+ " and id {1}.";
+	public static final String ERR_MSG_READ = ""
+			+ "Reading of resource unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_METADATA = ""
+			+ "Reading metadata of resource unsuccessful for type {0} and id {1}.";
 
 	private FedoraAdapter fedoraAdapter;
 	private static final String ARCHIVE_ID_FORMAT = "{0}:{1}-master";
@@ -60,9 +66,9 @@ public class FedoraResourceArchive implements ResourceArchive {
 		try {
 			createResource(dataDivider, type, id, resource, mimeType);
 		} catch (FedoraConflictException e) {
-			throw createResourceConflictException(RESOURCE_CREATE_CONFLICT_MESSAGE, type, id, e);
+			throw createResourceConflictException(ERR_MSG_CREATE_CONFLICT, type, id, e);
 		} catch (Exception e) {
-			throw createArchiveException(RESOURCE_CREATE_ERR_MESSAGE, type, id, e);
+			throw createArchiveException(ERR_MSG_CREATE, type, id, e);
 		}
 	}
 
@@ -97,9 +103,9 @@ public class FedoraResourceArchive implements ResourceArchive {
 		try {
 			return readResource(dataDivider, type, id);
 		} catch (FedoraNotFoundException e) {
-			throw createResourceNotFoundException(RESOURCE_READ_MISSING_MESSAGE, type, id, e);
+			throw createResourceNotFoundException(ERR_MSG_READ_MISSING, type, id, e);
 		} catch (Exception e) {
-			throw createArchiveException(RESOURCE_READ_ERR_MESSAGE, type, id, e);
+			throw createArchiveException(ERR_MSG_READ, type, id, e);
 		}
 	}
 
@@ -112,6 +118,34 @@ public class FedoraResourceArchive implements ResourceArchive {
 			String id, FedoraNotFoundException e) {
 		String formatedMessage = MessageFormat.format(message, type, id);
 		return ResourceNotFoundException.withMessageAndException(formatedMessage, e);
+	}
+
+	@Override
+	public ResourceMetadata readMetadata(String dataDivider, String type, String id) {
+		return tryToReadMetadata(dataDivider, type, id);
+	}
+
+	private ResourceMetadata tryToReadMetadata(String dataDivider, String type, String id) {
+		try {
+			return readMetadataFromFedoraAdapter(dataDivider, type, id);
+		} catch (FedoraNotFoundException e) {
+			throw createResourceNotFoundException(ERR_MSG_READ_METADATA_NOT_FOUND, type, id, e);
+		} catch (Exception e) {
+			throw createArchiveException(ERR_MSG_READ_METADATA, type, id, e);
+		}
+	}
+
+	private ResourceMetadata readMetadataFromFedoraAdapter(String dataDivider, String type,
+			String id) {
+		var readResourceMetadata = fedoraAdapter.readResourceMetadata(dataDivider,
+				ensembleId(type, id));
+		return createResourceMetadataForStorage(readResourceMetadata);
+	}
+
+	private ResourceMetadata createResourceMetadataForStorage(
+			se.uu.ub.cora.fedora.ResourceMetadata readResourceMetadata) {
+		return new ResourceMetadata(readResourceMetadata.fileSize(),
+				readResourceMetadata.checksumSHA512());
 	}
 
 	@Override

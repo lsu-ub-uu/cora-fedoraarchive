@@ -89,4 +89,8 @@ public class FedoraRecordArchiveProvider implements RecordArchiveProvider {
 		var fedoraAdapter = fedoraFactory.factorFedoraAdapter();
 		return new FedoraRecordArchive(xmlConverter, fedoraAdapter);
 	}
+
+	void onlyForTestSetFedoraFactory(FedoraFactory fedoraFactory) {
+		this.fedoraFactory = fedoraFactory;
+	}
 }

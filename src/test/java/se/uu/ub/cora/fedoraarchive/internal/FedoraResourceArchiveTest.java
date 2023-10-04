@@ -19,8 +19,8 @@
 package se.uu.ub.cora.fedoraarchive.internal;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -36,19 +36,25 @@ import se.uu.ub.cora.fedoraarchive.spy.InputStreamSpy;
 import se.uu.ub.cora.storage.ResourceConflictException;
 import se.uu.ub.cora.storage.ResourceNotFoundException;
 import se.uu.ub.cora.storage.archive.ArchiveException;
+import se.uu.ub.cora.storage.archive.ResourceMetadata;
 
 public class FedoraResourceArchiveTest {
 
-	public static final String RESOURCE_CREATE_CONFLICT_MESSAGE = ""
-			+ "Failed to create record due to already existing record id in Fedora Archive for type {0}"
+	public static final String ERR_MSG_CREATE_CONFLICT = ""
+			+ "Failed to create resource due to already existing record id in Fedora Archive for type {0}"
 			+ " and id {1}.";
-	public static final String RESOURCE_CREATE_ERR_MESSAGE = ""
-			+ "Creation of record unsuccessful for type {0} and id {1}.";
-	public static final String RESOURCE_READ_MISSING_MESSAGE = ""
-			+ "Failed to read record due to it could not be found in Fedora Archive for type {0}"
+	public static final String ERR_MSG_CREATE = ""
+			+ "Creation of resource unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_MISSING = ""
+			+ "Failed to read resource due to it could not be found in Fedora Archive for type {0}"
 			+ " and id {1}.";
-	public static final String RESOURCE_READ_ERR_MESSAGE = ""
-			+ "Reading of record unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_METADATA_NOT_FOUND = ""
+			+ "Failed to read metadata for resource due to it could not be found in Fedora Archive for type {0}"
+			+ " and id {1}.";
+	public static final String ERR_MSG_READ = ""
+			+ "Reading of resource unsuccessful for type {0} and id {1}.";
+	public static final String ERR_MSG_READ_METADATA = ""
+			+ "Reading metadata of resource unsuccessful for type {0} and id {1}.";
 
 	private static final String SOME_MESSAGE = "someMessage";
 	private static final String SOME_MIME_TYPE = "someMimeType";
@@ -59,14 +65,14 @@ public class FedoraResourceArchiveTest {
 	FedoraResourceArchive archive;
 	FedoraAdapterSpy fedoraAdapter;
 	private InputStream stream;
-	private String expectedId;
+	private String ensembledId;
 
 	@BeforeMethod
 	public void beforeMethod() {
 		fedoraAdapter = new FedoraAdapterSpy();
 		archive = new FedoraResourceArchive(fedoraAdapter);
 		stream = new InputStreamSpy();
-		expectedId = MessageFormat.format(ARCHIVE_ID_FORMAT, SOME_TYPE, SOME_ID);
+		ensembledId = MessageFormat.format(ARCHIVE_ID_FORMAT, SOME_TYPE, SOME_ID);
 	}
 
 	@Test
@@ -74,7 +80,7 @@ public class FedoraResourceArchiveTest {
 
 		archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 
-		fedoraAdapter.MCR.assertParameters("createResource", 0, SOME_DATA_DIVIDER, expectedId,
+		fedoraAdapter.MCR.assertParameters("createResource", 0, SOME_DATA_DIVIDER, ensembledId,
 				stream, SOME_MIME_TYPE);
 	}
 
@@ -85,11 +91,11 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
-			assertFalse(true);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceConflictException);
 			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_CREATE_CONFLICT_MESSAGE, SOME_TYPE, SOME_ID));
+					MessageFormat.format(ERR_MSG_CREATE_CONFLICT, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -101,11 +107,10 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
-			assertFalse(true);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
-			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_CREATE_ERR_MESSAGE, SOME_TYPE, SOME_ID));
+			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_CREATE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -117,11 +122,10 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
-			assertFalse(true);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
-			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_CREATE_ERR_MESSAGE, SOME_TYPE, SOME_ID));
+			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_CREATE, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -131,7 +135,7 @@ public class FedoraResourceArchiveTest {
 
 		InputStream readResource = archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 
-		fedoraAdapter.MCR.assertParameters("readResource", 0, SOME_DATA_DIVIDER, expectedId);
+		fedoraAdapter.MCR.assertParameters("readResource", 0, SOME_DATA_DIVIDER, ensembledId);
 		assertTrue(readResource instanceof InputStream);
 	}
 
@@ -142,11 +146,11 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
-			assertFalse(true);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
 			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_READ_MISSING_MESSAGE, SOME_TYPE, SOME_ID));
+					MessageFormat.format(ERR_MSG_READ_MISSING, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -158,11 +162,10 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
-			assertFalse(true);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
-			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_READ_ERR_MESSAGE, SOME_TYPE, SOME_ID));
+			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_READ, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -174,11 +177,59 @@ public class FedoraResourceArchiveTest {
 
 		try {
 			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
-			assertFalse(true);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof ArchiveException);
+			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_READ, SOME_TYPE, SOME_ID));
+			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
+		}
+	}
+
+	@Test
+	public void testReadMetadata() throws Exception {
+
+		ResourceMetadata resourceMetadataStorage = archive.readMetadata(SOME_DATA_DIVIDER,
+				SOME_TYPE, SOME_ID);
+
+		fedoraAdapter.MCR.assertParameters("readResourceMetadata", 0, SOME_DATA_DIVIDER,
+				ensembledId);
+
+		se.uu.ub.cora.fedora.ResourceMetadata resourceMetadataFedora = (se.uu.ub.cora.fedora.ResourceMetadata) fedoraAdapter.MCR
+				.getReturnValue("readResourceMetadata", 0);
+		assertEquals(resourceMetadataStorage.fileSize(), resourceMetadataFedora.fileSize());
+		assertEquals(resourceMetadataStorage.checksumSHA512(),
+				resourceMetadataFedora.checksumSHA512());
+
+	}
+
+	@Test
+	public void testReadMeatadataNotFoundException() throws Exception {
+		fedoraAdapter.MRV.setAlwaysThrowException("readResourceMetadata",
+				FedoraNotFoundException.withMessage(SOME_MESSAGE));
+
+		try {
+			archive.readMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			fail();
+		} catch (Exception e) {
+			assertTrue(e instanceof ResourceNotFoundException);
+			assertEquals(e.getMessage(),
+					MessageFormat.format(ERR_MSG_READ_METADATA_NOT_FOUND, SOME_TYPE, SOME_ID));
+			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
+		}
+	}
+
+	@Test
+	public void testReadMeatadataExceptionInFedora() throws Exception {
+		fedoraAdapter.MRV.setAlwaysThrowException("readResourceMetadata",
+				FedoraException.withMessage(SOME_MESSAGE));
+
+		try {
+			archive.readMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			fail();
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
 			assertEquals(e.getMessage(),
-					MessageFormat.format(RESOURCE_READ_ERR_MESSAGE, SOME_TYPE, SOME_ID));
+					MessageFormat.format(ERR_MSG_READ_METADATA, SOME_TYPE, SOME_ID));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
