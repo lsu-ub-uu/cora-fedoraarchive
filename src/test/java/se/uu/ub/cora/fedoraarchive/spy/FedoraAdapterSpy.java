@@ -21,7 +21,8 @@ package se.uu.ub.cora.fedoraarchive.spy;
 import java.io.InputStream;
 
 import se.uu.ub.cora.fedora.FedoraAdapter;
-import se.uu.ub.cora.fedora.ResourceMetadata;
+import se.uu.ub.cora.fedora.record.ResourceMetadata;
+import se.uu.ub.cora.fedora.record.ResourceMetadataToUpdate;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
 import se.uu.ub.cora.testutils.mrv.MethodReturnValues;
 
@@ -87,5 +88,12 @@ public class FedoraAdapterSpy implements FedoraAdapter {
 	@Override
 	public void deleteResource(String dataDivider, String resourceId) {
 		MCR.addCall("dataDivider", dataDivider, "resourceId", resourceId);
+	}
+
+	@Override
+	public void updateResourceMetadata(String dataDivider, String resourceId,
+			ResourceMetadataToUpdate resourceMetadataToUpdate) {
+		MCR.addCall("dataDivider", dataDivider, "resourceId", resourceId,
+				"resourceMetadataToUpdate", resourceMetadataToUpdate);
 	}
 }
