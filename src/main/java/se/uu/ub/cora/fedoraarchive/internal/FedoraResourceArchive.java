@@ -50,7 +50,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 	}
 
 	@Override
-	public void create(String dataDivider, String type, String id, InputStream resource,
+	public void createMasterResource(String dataDivider, String type, String id, InputStream resource,
 			String mimeType) {
 		tryToCreateResource(dataDivider, type, id, resource, mimeType);
 	}
@@ -89,7 +89,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 	}
 
 	@Override
-	public InputStream read(String dataDivider, String type, String id) {
+	public InputStream readMasterResource(String dataDivider, String type, String id) {
 		return tryToReadResource(dataDivider, type, id);
 	}
 
@@ -116,7 +116,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 	}
 
 	@Override
-	public ResourceMetadata readMetadata(String dataDivider, String type, String id) {
+	public ResourceMetadata readMasterResourceMetadata(String dataDivider, String type, String id) {
 		return tryToReadMetadata(dataDivider, type, id);
 	}
 
@@ -144,7 +144,7 @@ public class FedoraResourceArchive implements ResourceArchive {
 	}
 
 	@Override
-	public void updateMetadata(String dataDivider, String type, String id,
+	public void updateMasterResourceMetadata(String dataDivider, String type, String id,
 			ResourceMetadataToUpdate resourceMetadataStorage) {
 		try {
 			fedoraAdapter.updateResourceMetadata(dataDivider, ensembleId(type, id),

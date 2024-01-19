@@ -76,7 +76,7 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testCreate() throws Exception {
 
-		archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+		archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 
 		fedoraAdapter.MCR.assertParameters("createResource", 0, SOME_DATA_DIVIDER, ensembledId,
 				stream, SOME_MIME_TYPE);
@@ -88,7 +88,7 @@ public class FedoraResourceArchiveTest {
 				FedoraConflictException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceConflictException);
@@ -104,7 +104,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -120,7 +120,7 @@ public class FedoraResourceArchiveTest {
 				new RuntimeException(SOME_MESSAGE));
 
 		try {
-			archive.create(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -133,7 +133,7 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testRead() throws Exception {
 
-		InputStream readResource = archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+		InputStream readResource = archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 
 		fedoraAdapter.MCR.assertParameters("readResource", 0, SOME_DATA_DIVIDER, ensembledId);
 		assertTrue(readResource instanceof InputStream);
@@ -145,7 +145,7 @@ public class FedoraResourceArchiveTest {
 				FedoraNotFoundException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
@@ -161,7 +161,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -177,7 +177,7 @@ public class FedoraResourceArchiveTest {
 				new RuntimeException(SOME_MESSAGE));
 
 		try {
-			archive.read(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -190,7 +190,7 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testReadMetadata() throws Exception {
 
-		ResourceMetadata resourceMetadataStorage = archive.readMetadata(SOME_DATA_DIVIDER,
+		ResourceMetadata resourceMetadataStorage = archive.readMasterResourceMetadata(SOME_DATA_DIVIDER,
 				SOME_TYPE, SOME_ID);
 
 		fedoraAdapter.MCR.assertParameters("readResourceMetadata", 0, SOME_DATA_DIVIDER,
@@ -210,7 +210,7 @@ public class FedoraResourceArchiveTest {
 				FedoraNotFoundException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.readMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			archive.readMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
@@ -226,7 +226,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.readMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			archive.readMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -239,7 +239,7 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testUpdateMetadata() throws Exception {
 
-		archive.updateMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+		archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
 
 		fedoraAdapter.MCR.assertParameters("updateResourceMetadata", 0, SOME_DATA_DIVIDER,
 				ensembledId);
@@ -259,7 +259,7 @@ public class FedoraResourceArchiveTest {
 				FedoraNotFoundException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.updateMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
@@ -275,7 +275,7 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.updateMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
