@@ -14,6 +14,8 @@ module se.uu.ub.cora.fedoraarchive {
 	requires se.uu.ub.cora.xmlconverter;
 	requires se.uu.ub.cora.logger;
 
+	exports se.uu.ub.cora.fedoraarchive.path;
+
 	provides se.uu.ub.cora.storage.archive.RecordArchiveProvider with FedoraRecordArchiveProvider;
 	provides se.uu.ub.cora.storage.archive.ResourceArchiveInstanceProvider
 			with FedoraResourceArchiveProvider;
