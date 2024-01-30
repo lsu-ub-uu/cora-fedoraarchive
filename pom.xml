@@ -38,7 +38,7 @@
 		<json.version>3.9.0</json.version>
 		<logger.version>2.10.0</logger.version>
 		<converter.version>3.8.0</converter.version>
-		<xmlconverter.version>2.9.0</xmlconverter.version>
+		<xmlconverter.version>2.10-SNAPSHOT</xmlconverter.version>
 		<testutils.version>1.11.0</testutils.version>
 		<testspies.version>1.2.0</testspies.version>
 	</properties>
