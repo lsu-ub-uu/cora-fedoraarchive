@@ -20,6 +20,7 @@ package se.uu.ub.cora.fedoraarchive.spy;
 
 import java.util.function.Supplier;
 
+import se.uu.ub.cora.converter.ExternalUrls;
 import se.uu.ub.cora.converter.ExternallyConvertibleToStringConverter;
 import se.uu.ub.cora.data.ExternallyConvertible;
 import se.uu.ub.cora.testutils.mcr.MethodCallRecorder;
@@ -42,8 +43,9 @@ public class ExternallyConvertibleToStringConverterSpy
 	}
 
 	@Override
-	public String convertWithLinks(ExternallyConvertible externallyConvertible, String baseUrl) {
+	public String convertWithLinks(ExternallyConvertible externallyConvertible,
+			ExternalUrls externalUrls) {
 		return (String) MCR.addCallAndReturnFromMRV("externallyConvertible", externallyConvertible,
-				"baseUrl", baseUrl);
+				"externalUrls", externalUrls);
 	}
 }

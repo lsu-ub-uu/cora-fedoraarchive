@@ -31,13 +31,13 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>9.1-SNAPSHOT</storage.version>
-		<initialize.version>1.5.0</initialize.version>
-		<fedora.version>4.1-SNAPSHOT</fedora.version>
-		<coradata.version>8.0.0</coradata.version>
-		<json.version>3.9.0</json.version>
+		<storage.version>9.1.0</storage.version>
+		<initialize.version>1.6.0</initialize.version>
+		<fedora.version>4.1.0</fedora.version>
+		<coradata.version>9.0.0</coradata.version>
+		<json.version>3.10.0</json.version>
 		<logger.version>2.10.0</logger.version>
-		<converter.version>3.8.0</converter.version>
+		<converter.version>4.0.0</converter.version>
 		<xmlconverter.version>2.10-SNAPSHOT</xmlconverter.version>
 		<testutils.version>1.11.0</testutils.version>
 		<testspies.version>1.2.0</testspies.version>
