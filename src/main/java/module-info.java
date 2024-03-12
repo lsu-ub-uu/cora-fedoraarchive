@@ -11,7 +11,6 @@ module se.uu.ub.cora.fedoraarchive {
 	requires se.uu.ub.cora.fedora;
 	requires se.uu.ub.cora.converter;
 	requires se.uu.ub.cora.httphandler;
-	// requires se.uu.ub.cora.xmlconverter;
 	requires se.uu.ub.cora.logger;
 
 	exports se.uu.ub.cora.fedoraarchive.path;

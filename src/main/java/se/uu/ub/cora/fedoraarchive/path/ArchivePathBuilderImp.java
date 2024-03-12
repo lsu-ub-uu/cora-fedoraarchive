@@ -37,12 +37,13 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 
 	@Override
 	public String buildPathToAResourceInArchive(String dataDivider, String type, String id) {
+
 		String sha256Path = generateSha256Path(dataDivider, type, id);
-		return buildImagePathFromSha256Path(archiveBasePath, type, id, sha256Path);
+		return buildImagePathFromSha256Path(archiveBasePath, dataDivider, type, id, sha256Path);
 	}
 
-	private String buildImagePathFromSha256Path(String archiveBasePath, String type, String id,
-			String sha256Path) {
+	private String buildImagePathFromSha256Path(String archiveBasePath, String dataDivider,
+			String type, String id, String sha256Path) {
 		String sha256PathLowerCase = sha256Path.toLowerCase();
 		String folder1 = sha256PathLowerCase.substring(0, 3);
 		String folder2 = sha256PathLowerCase.substring(3, 6);
@@ -50,7 +51,7 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 		String folder4 = sha256PathLowerCase;
 
 		return archiveBasePath + "/" + folder1 + "/" + folder2 + "/" + folder3 + "/" + folder4
-				+ "/v1/content/" + type + ":" + id + "-master";
+				+ "/v1/content/" + dataDivider + ":" + type + ":" + id + "-master";
 	}
 
 	private String generateSha256Path(String dataDivider, String type, String id) {
@@ -59,7 +60,7 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 	}
 
 	private String generateObjectIdentifier(String dataDivider, String type, String id) {
-		String ocflPathLayout = "info:fedora/{0}/resource/{1}:{2}-master";
+		String ocflPathLayout = "info:fedora/{0}:{1}:{2}-master";
 		return MessageFormat.format(ocflPathLayout, dataDivider, type, id);
 	}
 
@@ -78,20 +79,27 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 		}
 	}
 
-	private static String bytesToHex(byte[] hash) {
-		StringBuilder hexString = new StringBuilder(2 * hash.length);
-		forEach(hash, hexString);
+	protected String bytesToHex(byte[] hash) {
+		int initialFactorBytesToHex = 2;
+		StringBuilder hexString = new StringBuilder(initialFactorBytesToHex * hash.length);
+		bytesToHexInStringBuilder(hash, hexString);
 		return hexString.toString();
 	}
 
-	private static void forEach(byte[] hash, StringBuilder hexString) {
+	private void bytesToHexInStringBuilder(byte[] hash, StringBuilder hexString) {
 		for (int i = 0; i < hash.length; i++) {
-			String hex = Integer.toHexString(0xff & hash[i]);
-			if (hex.length() == 1) {
-				hexString.append('0');
-			}
+			byte byteOfHash = hash[i];
+			String hex = byteToHex(byteOfHash);
 			hexString.append(hex);
 		}
+	}
+
+	private String byteToHex(byte byteOfHash) {
+		String hex = Integer.toHexString(0xff & byteOfHash);
+		if (hex.length() == 1) {
+			hex = "0" + hex;
+		}
+		return hex;
 	}
 
 	void onlyForTestSetHashAlgorithm(String hashAlgorithm) {

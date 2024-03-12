@@ -42,10 +42,11 @@ public class ArchivePathBuilderTest {
 	private static final String SOME_DATA_DIVIDER = "someDataDivider";
 	private static final String SOME_TYPE = "someType";
 	private static final String SOME_ID = "someId";
-	private static final String SHA256_OF_ID = "d8c88703e3133e12b4f9df4ec1df465a86af0e3a"
-			+ "10710fb18db1f55f9ed40622";
-	private static final String EXPECTED_ARCHIVE_BASE_MASTER = SOME_ARCHIVE_PATH + "/d8c/887/03e/"
-			+ SHA256_OF_ID + "/v1/content/" + "someType:someId-master";
+	private static final String SHA256_OF_OCFL_PATH_LAYOUT = "dad16615d91e1770634b9a6b2dae6d6b6e184f"
+			+ "ca4260cbcce1b329b8c6b9c7e3";
+	private static final String EXPECTED_ARCHIVE_BASE_MASTER = SOME_ARCHIVE_PATH + "/dad/166/15d/"
+			+ SHA256_OF_OCFL_PATH_LAYOUT + "/v1/content/" + SOME_DATA_DIVIDER + ":" + SOME_TYPE
+			+ ":" + SOME_ID + "-master";
 	private static final String SOME_FILE_SYSTEM_BASE_PATH = "/tmp/streamStorageOnDiskTempStream/";
 
 	private ArchivePathBuilderImp pathBuilder;
@@ -123,5 +124,19 @@ public class ArchivePathBuilderTest {
 			assertEquals(e.getCause().getMessage(),
 					"NonExistingAlgorithm MessageDigest not available");
 		}
+	}
+
+	@Test
+	public void testOnlyForTEstGetArchiveBasePath() throws Exception {
+		assertEquals(pathBuilder.onlyForTestGetArchiveBasePath(), SOME_ARCHIVE_PATH);
+	}
+
+	@Test
+	public void testByteToHexIfLengthIsOne() throws Exception {
+		byte[] hash = { 1, 2, 11 };
+
+		String bytesToHex = pathBuilder.bytesToHex(hash);
+
+		assertEquals(bytesToHex, "01020b");
 	}
 }
