@@ -80,7 +80,7 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 	}
 
 	protected String bytesToHex(byte[] hash) {
-		int initialFactorBytesToHex = 2;
+		final int initialFactorBytesToHex = 2;
 		StringBuilder hexString = new StringBuilder(initialFactorBytesToHex * hash.length);
 		bytesToHexInStringBuilder(hash, hexString);
 		return hexString.toString();
