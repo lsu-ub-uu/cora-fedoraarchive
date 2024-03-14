@@ -33,7 +33,7 @@
 	<properties>
 		<storage.version>9.1.0</storage.version>
 		<initialize.version>1.6.0</initialize.version>
-		<fedora.version>4.2-SNAPSHOT</fedora.version>
+		<fedora.version>4.2.0</fedora.version>
 		<coradata.version>9.0.0</coradata.version>
 		<json.version>3.10.0</json.version>
 		<logger.version>2.10.0</logger.version>
