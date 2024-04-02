@@ -88,7 +88,8 @@ public class FedoraResourceArchiveTest {
 				FedoraConflictException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream,
+					SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceConflictException);
@@ -104,7 +105,8 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream,
+					SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -120,7 +122,8 @@ public class FedoraResourceArchiveTest {
 				new RuntimeException(SOME_MESSAGE));
 
 		try {
-			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream, SOME_MIME_TYPE);
+			archive.createMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, stream,
+					SOME_MIME_TYPE);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
@@ -133,7 +136,8 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testRead() throws Exception {
 
-		InputStream readResource = archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+		InputStream readResource = archive.readMasterResource(SOME_DATA_DIVIDER, SOME_TYPE,
+				SOME_ID);
 
 		fedoraAdapter.MCR.assertParameters("readResource", 0, SOME_DATA_DIVIDER, ensembledId);
 		assertTrue(readResource instanceof InputStream);
@@ -190,8 +194,8 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testReadMetadata() throws Exception {
 
-		ResourceMetadata resourceMetadataStorage = archive.readMasterResourceMetadata(SOME_DATA_DIVIDER,
-				SOME_TYPE, SOME_ID);
+		ResourceMetadata resourceMetadataStorage = archive
+				.readMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
 
 		fedoraAdapter.MCR.assertParameters("readResourceMetadata", 0, SOME_DATA_DIVIDER,
 				ensembledId);
@@ -239,7 +243,8 @@ public class FedoraResourceArchiveTest {
 	@Test
 	public void testUpdateMetadata() throws Exception {
 
-		archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+		archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID,
+				resourceMetadataStorage);
 
 		fedoraAdapter.MCR.assertParameters("updateResourceMetadata", 0, SOME_DATA_DIVIDER,
 				ensembledId);
@@ -259,7 +264,8 @@ public class FedoraResourceArchiveTest {
 				FedoraNotFoundException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID,
+					resourceMetadataStorage);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ResourceNotFoundException);
@@ -275,12 +281,51 @@ public class FedoraResourceArchiveTest {
 				FedoraException.withMessage(SOME_MESSAGE));
 
 		try {
-			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID, resourceMetadataStorage);
+			archive.updateMasterResourceMetadata(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID,
+					resourceMetadataStorage);
 			fail("Failed");
 		} catch (Exception e) {
 			assertTrue(e instanceof ArchiveException);
 			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_EXCEPTION, SOME_TYPE, SOME_ID,
 					"Updating metadata"));
+			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
+		}
+	}
+
+	@Test
+	public void testDelete() throws Exception {
+		archive.delete(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+		fedoraAdapter.MCR.assertParameters("deleteResource", 0, SOME_DATA_DIVIDER, ensembledId);
+	}
+
+	@Test
+	public void testDeleteNotFound() throws Exception {
+		fedoraAdapter.MRV.setAlwaysThrowException("deleteResource",
+				FedoraNotFoundException.withMessage(SOME_MESSAGE));
+
+		try {
+			archive.delete(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			fail("Should have thrown a FedoraNotFoundException");
+		} catch (Exception e) {
+			assertTrue(e instanceof ResourceNotFoundException);
+			assertEquals(e.getMessage(), MessageFormat.format(ERR_MSG_NOT_FOUND_FEDORA_ADAPTER,
+					SOME_TYPE, SOME_ID, "delete"));
+			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
+		}
+	}
+
+	@Test
+	public void testDeleteNoContent() throws Exception {
+		fedoraAdapter.MRV.setAlwaysThrowException("deleteResource",
+				FedoraException.withMessage(SOME_MESSAGE));
+
+		try {
+			archive.delete(SOME_DATA_DIVIDER, SOME_TYPE, SOME_ID);
+			fail("Should have thrown a FedoraException");
+		} catch (Exception e) {
+			assertTrue(e instanceof ArchiveException);
+			assertEquals(e.getMessage(),
+					MessageFormat.format(ERR_MSG_EXCEPTION, SOME_TYPE, SOME_ID, "Deleting"));
 			assertEquals(e.getCause().getMessage(), SOME_MESSAGE);
 		}
 	}
@@ -291,9 +336,8 @@ public class FedoraResourceArchiveTest {
 		archive.update(null, null, null, null, null);
 	}
 
-	@Test(expectedExceptions = UnsupportedOperationException.class, expectedExceptionsMessageRegExp = "Not implemented yet")
-	public void testDeleteUnsupported() throws Exception {
-
-		archive.delete(null, null, null);
+	@Test
+	public void testGetFedoraAdapter() throws Exception {
+		assertEquals(archive.onlyForTestGetFedoraAdapter(), fedoraAdapter);
 	}
 }

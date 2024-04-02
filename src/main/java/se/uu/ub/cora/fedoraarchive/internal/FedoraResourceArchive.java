@@ -50,8 +50,8 @@ public class FedoraResourceArchive implements ResourceArchive {
 	}
 
 	@Override
-	public void createMasterResource(String dataDivider, String type, String id, InputStream resource,
-			String mimeType) {
+	public void createMasterResource(String dataDivider, String type, String id,
+			InputStream resource, String mimeType) {
 		tryToCreateResource(dataDivider, type, id, resource, mimeType);
 	}
 
@@ -171,11 +171,17 @@ public class FedoraResourceArchive implements ResourceArchive {
 
 	@Override
 	public void delete(String dataDivider, String type, String id) {
-		throw new UnsupportedOperationException("Not implemented yet");
+		String archiveId = ensembleId(type, id);
+		try {
+			fedoraAdapter.deleteResource(dataDivider, archiveId);
+		} catch (FedoraNotFoundException e) {
+			throw createNotFoundException(type, id, "delete", e);
+		} catch (Exception e) {
+			throw createArchiveException(type, id, "Deleting", e);
+		}
 	}
 
 	public FedoraAdapter onlyForTestGetFedoraAdapter() {
 		return fedoraAdapter;
 	}
-
 }
