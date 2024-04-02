@@ -335,4 +335,9 @@ public class FedoraResourceArchiveTest {
 
 		archive.update(null, null, null, null, null);
 	}
+
+	@Test
+	public void testGetFedoraAdapter() throws Exception {
+		assertEquals(archive.onlyForTestGetFedoraAdapter(), fedoraAdapter);
+	}
 }
