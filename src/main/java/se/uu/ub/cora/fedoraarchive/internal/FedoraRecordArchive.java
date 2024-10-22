@@ -32,15 +32,20 @@ import se.uu.ub.cora.storage.archive.RecordArchive;
 
 public class FedoraRecordArchive implements RecordArchive {
 	public static final String RECORD_CREATE_CONFLICT_MESSAGE = ""
-			+ "Failed to create record due to already existing record id in Fedora Archive for type {0} "
+			+ "Failed to create record, record already exists in Fedora Archive for type {0} "
 			+ "and id {1}.";
 	public static final String RECORD_CREATE_ERR_MESSAGE = ""
-			+ "Creation of record unsuccessful for type {0} and id {1}.";
+			+ "Failed to create record for type {0} and id {1}.";
 	public static final String RECORD_UPDATE_MISSING_MESSAGE = ""
-			+ "Update of record could not be executed since it was not located in Fedora Archive "
+			+ "Failed to update record because it was not found in Fedora Archive "
 			+ "for type {0} and id {1}.";
 	public static final String RECORD_UPDATE_ERR_MESSAGE = ""
-			+ "Unable to update record in Fedora Archive for type {0} and id {1}.";
+			+ "Failed to update record in Fedora Archive for type {0} and id {1}.";
+	public static final String RECORD_DELETE_MISSING_MESSAGE = ""
+			+ "Failed to delete record because it was not found in Fedora Archive "
+			+ "for type {0} and id {1}.";
+	public static final String RECORD_DELETE_ERR_MESSAGE = ""
+			+ "Failed to delete record in Fedora Archive for type {0} and id {1}.";
 
 	private FedoraAdapter fedoraAdapter;
 	private ExternallyConvertibleToStringConverter xmlConverter;
@@ -99,5 +104,18 @@ public class FedoraRecordArchive implements RecordArchive {
 
 	public ExternallyConvertibleToStringConverter onlyForTestGetXmlConverter() {
 		return xmlConverter;
+	}
+
+	@Override
+	public void delete(String dataDivider, String type, String id) {
+		try {
+			fedoraAdapter.deleteRecord(dataDivider, combineTypeAndId(type, id));
+		} catch (FedoraNotFoundException e) {
+			throw RecordNotFoundException.withMessageAndException(
+					MessageFormat.format(RECORD_DELETE_MISSING_MESSAGE, type, id), e);
+		} catch (Exception e) {
+			throw ArchiveException.withMessageAndException(
+					MessageFormat.format(RECORD_DELETE_ERR_MESSAGE, type, id), e);
+		}
 	}
 }
