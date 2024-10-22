@@ -31,7 +31,7 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>9.4-SNAPSHOT</storage.version>
+		<storage.version>9.4.0</storage.version>
 		<initialize.version>1.6.0</initialize.version>
 		<fedora.version>4.2.0</fedora.version>
 		<coradata.version>10.0.0</coradata.version>
