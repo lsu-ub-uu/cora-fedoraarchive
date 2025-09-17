@@ -18,45 +18,35 @@
  */
 package se.uu.ub.cora.fedoraarchive.path;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 
-import se.uu.ub.cora.storage.StorageException;
 import se.uu.ub.cora.storage.archive.ArchivePathBuilder;
+import se.uu.ub.cora.storage.hash.CoraDigestor;
 
 public class ArchivePathBuilderImp implements ArchivePathBuilder {
 
-	private String hashAlgorithm = "SHA-256";
-	private String archiveBasePath;
+	public static ArchivePathBuilderImp usingBasePathAndCoraDigestUtils(String archiveBasePath,
+			CoraDigestor digestor) {
+		return new ArchivePathBuilderImp(archiveBasePath, digestor);
+	}
 
-	public ArchivePathBuilderImp(String archiveBasePath) {
+	private String archiveBasePath;
+	private CoraDigestor digestor;
+
+	private ArchivePathBuilderImp(String archiveBasePath, CoraDigestor digestor) {
 		this.archiveBasePath = archiveBasePath;
+		this.digestor = digestor;
 	}
 
 	@Override
 	public String buildPathToAResourceInArchive(String dataDivider, String type, String id) {
-
 		String sha256Path = generateSha256Path(dataDivider, type, id);
 		return buildImagePathFromSha256Path(archiveBasePath, dataDivider, type, id, sha256Path);
 	}
 
-	private String buildImagePathFromSha256Path(String archiveBasePath, String dataDivider,
-			String type, String id, String sha256Path) {
-		String sha256PathLowerCase = sha256Path.toLowerCase();
-		String folder1 = sha256PathLowerCase.substring(0, 3);
-		String folder2 = sha256PathLowerCase.substring(3, 6);
-		String folder3 = sha256PathLowerCase.substring(6, 9);
-		String folder4 = sha256PathLowerCase;
-
-		return archiveBasePath + "/" + folder1 + "/" + folder2 + "/" + folder3 + "/" + folder4
-				+ "/v1/content/" + dataDivider + ":" + type + ":" + id + "-master";
-	}
-
 	private String generateSha256Path(String dataDivider, String type, String id) {
 		String objectIdentifier = generateObjectIdentifier(dataDivider, type, id);
-		return generateSha256(objectIdentifier);
+		return digestor.stringToSha256Hex(objectIdentifier);
 	}
 
 	private String generateObjectIdentifier(String dataDivider, String type, String id) {
@@ -64,50 +54,35 @@ public class ArchivePathBuilderImp implements ArchivePathBuilder {
 		return MessageFormat.format(ocflPathLayout, dataDivider, type, id);
 	}
 
-	private String generateSha256(String fedoraId) {
-		MessageDigest digest = tryToGetDigestAlgorithm();
+	private String buildImagePathFromSha256Path(String archiveBasePath, String dataDivider,
+			String type, String id, String sha256Path) {
+		String folder = createFolder(archiveBasePath, sha256Path);
+		String fileName = createFileName(dataDivider, type, id);
 
-		final byte[] hashbytes = digest.digest(fedoraId.getBytes(StandardCharsets.UTF_8));
-		return bytesToHex(hashbytes);
+		return folder + "/" + fileName;
 	}
 
-	private MessageDigest tryToGetDigestAlgorithm() {
-		try {
-			return MessageDigest.getInstance(hashAlgorithm);
-		} catch (NoSuchAlgorithmException e) {
-			throw StorageException.withMessageAndException("Error while analyzing image.", e);
-		}
+	private String createFolder(String archiveBasePath, String sha256Path) {
+		String sha256PathLowerCase = sha256Path.toLowerCase();
+		String folder1 = sha256PathLowerCase.substring(0, 3);
+		String folder2 = sha256PathLowerCase.substring(3, 6);
+		String folder3 = sha256PathLowerCase.substring(6, 9);
+		String folder4 = sha256PathLowerCase;
+
+		return String.join("/", archiveBasePath, folder1, folder2, folder3, folder4, "v1",
+				"content");
 	}
 
-	protected String bytesToHex(byte[] hash) {
-		final int initialFactorBytesToHex = 2;
-		StringBuilder hexString = new StringBuilder(initialFactorBytesToHex * hash.length);
-		bytesToHexInStringBuilder(hash, hexString);
-		return hexString.toString();
-	}
-
-	private void bytesToHexInStringBuilder(byte[] hash, StringBuilder hexString) {
-		for (int i = 0; i < hash.length; i++) {
-			byte byteOfHash = hash[i];
-			String hex = byteToHex(byteOfHash);
-			hexString.append(hex);
-		}
-	}
-
-	private String byteToHex(byte byteOfHash) {
-		String hex = Integer.toHexString(0xff & byteOfHash);
-		if (hex.length() == 1) {
-			hex = "0" + hex;
-		}
-		return hex;
-	}
-
-	void onlyForTestSetHashAlgorithm(String hashAlgorithm) {
-		this.hashAlgorithm = hashAlgorithm;
+	private String createFileName(String dataDivider, String type, String id) {
+		return String.join(":", dataDivider, type, id + "-master");
 	}
 
 	public String onlyForTestGetArchiveBasePath() {
 		return archiveBasePath;
+	}
+
+	public CoraDigestor onlyForTestGetCoraDigestor() {
+		return digestor;
 	}
 
 }
