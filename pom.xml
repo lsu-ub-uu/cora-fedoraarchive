@@ -31,8 +31,8 @@
 	<name>Fedora Archive</name>
 
 	<properties>
-		<storage.version>9.9-SNAPSHOT</storage.version>
-		<storage-spies.version>1.15-SNAPSHOT</storage-spies.version>
+		<storage.version>9.9.0</storage.version>
+		<storage-spies.version>1.15.0</storage-spies.version>
 		<initialize.version>1.7.0</initialize.version>
 		<fedora.version>4.2.0</fedora.version>
 		<coradata.version>11.0.0</coradata.version>
